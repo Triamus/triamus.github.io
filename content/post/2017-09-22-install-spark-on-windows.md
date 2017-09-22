@@ -109,7 +109,7 @@ tar xzfv spark-2.2.0-bin-hadoop2.7.tgz
 
 After some time, your Spark install (extraction) should be done and a couple of folders being created at your chosen location.
 
-![Spark Directory](/post/img/2017-09-22-install-spark-on-windows/spark_directory.PNG)
+![Spark Directory](/post/img/2017-09-22-install-spark-on-windows/spark_directory.png)
 
 ## Setting environment variables
 
