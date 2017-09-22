@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Bash on Windows on suspiciously datalicious</title>
-    <link>https://triamus.github.io/tags/bash-on-windows/</link>
+    <link>/tags/bash-on-windows/</link>
     <description>Recent content in Bash on Windows on suspiciously datalicious</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -12,10 +12,10 @@
     
     <item>
       <title>Install Spark on Windows</title>
-      <link>https://triamus.github.io/post/install-spark-on-windows/</link>
+      <link>/post/install-spark-on-windows/</link>
       <pubDate>Fri, 22 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/install-spark-on-windows/</guid>
+      <guid>/post/install-spark-on-windows/</guid>
       <description>
 
 &lt;ul&gt;
@@ -80,11 +80,11 @@ java -version
 python --version
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_system_and_version_info.PNG&#34; alt=&#34;CMD System Info&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_system_and_version_info.PNG&#34; alt=&#34;CMD System Info&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We can do the same for Bash (note the default version of Python)&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_system_and_version_info.PNG&#34; alt=&#34;Bash System Info&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_system_and_version_info.PNG&#34; alt=&#34;Bash System Info&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;install-scala&#34;&gt;Install Scala&lt;/h2&gt;
 
@@ -97,13 +97,13 @@ python --version
 
 &lt;p&gt;Your output should look like this&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_scala_check_after_install.PNG&#34; alt=&#34;CMD Scala Check&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_scala_check_after_install.PNG&#34; alt=&#34;CMD Scala Check&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;install-spark&#34;&gt;Install Spark&lt;/h2&gt;
 
 &lt;p&gt;Find the latest stable version of Spark on &lt;a href=&#34;http://spark.apache.org/downloads.html&#34; target=&#34;_blank&#34;&gt;Apache Spark Downloads&lt;/a&gt; and use pre-built on Hadoop and direct download.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/download_spark.PNG&#34; alt=&#34;Spark Download Page&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/download_spark.PNG&#34; alt=&#34;Spark Download Page&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Copy/save the .tgz file to/at the location where you like Spark to reside and extract it from some Linux shell (e.g. Bash, Cygwin) via below command (your file name may vary). Alternatively, you can use some extraction software such as 7zip.&lt;/p&gt;
 
@@ -111,11 +111,11 @@ python --version
 tar xzfv spark-2.2.0-bin-hadoop2.7.tgz
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_extract_spark_tgz.PNG&#34; alt=&#34;Bash extract Spark&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_extract_spark_tgz.PNG&#34; alt=&#34;Bash extract Spark&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;After some time, your Spark install (extraction) should be done and a couple of folders being created at your chosen location.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/spark_directory.PNG&#34; alt=&#34;Spark Directory&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/spark_directory.png&#34; alt=&#34;Spark Directory&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;setting-environment-variables&#34;&gt;Setting environment variables&lt;/h2&gt;
 
@@ -138,7 +138,7 @@ tar xzfv spark-2.2.0-bin-hadoop2.7.tgz
 
 &lt;p&gt;Your Windows environment variables may look something like this now&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/windows_environment_variables.PNG&#34; alt=&#34;Windows Environment Variables&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/windows_environment_variables.PNG&#34; alt=&#34;Windows Environment Variables&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;download-clone-windows-utilities-for-corresponding-hadoop-version&#34;&gt;Download/clone windows utilities for corresponding Hadoop version&lt;/h2&gt;
 
@@ -160,7 +160,7 @@ tar xzfv spark-2.2.0-bin-hadoop2.7.tgz
 
 &lt;p&gt;Your output should look something like below&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_spark-shell.PNG&#34; alt=&#34;CMD Initial Spark Shell&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_spark-shell.PNG&#34; alt=&#34;CMD Initial Spark Shell&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We execute a minimal example from &lt;a href=&#34;http://spark.apache.org/docs/latest/quick-start.html&#34; target=&#34;_blank&#34;&gt;Apache Spark Quick Start&lt;/a&gt; (note that the README file is located one directory up) to test basic functionality.&lt;/p&gt;
 
@@ -169,11 +169,11 @@ textFile.count() // Number of items in this Dataset
 textFile.first() // First item in this Dataset
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_scala_initial_test.PNG&#34; alt=&#34;CMD Scala Initial Test&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_scala_initial_test.PNG&#34; alt=&#34;CMD Scala Initial Test&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Since the Linux subsystem for Windows inherits the Path variables from Windows, we can run the same without further adjustments on Bash on Ubuntu on Windows&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_spark-shell.PNG&#34; alt=&#34;Bash Spark Shell&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_spark-shell.PNG&#34; alt=&#34;Bash Spark Shell&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;run-pyspark&#34;&gt;Run PySpark&lt;/h2&gt;
 
@@ -192,22 +192,22 @@ counts = text_file.flatMap(lambda line: line.split(&amp;quot; &amp;quot;)) \
 print(counts)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_pyspark_initial_test.PNG&#34; alt=&#34;CMD PySpark Initial Test&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_pyspark_initial_test.PNG&#34; alt=&#34;CMD PySpark Initial Test&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As before, the same command works in Bash but note the default Python version used&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_initial_test.PNG&#34; alt=&#34;Bash PySpark Initial Test&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_initial_test.PNG&#34; alt=&#34;Bash PySpark Initial Test&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In case you want to work with a different Python version, adjust respective Bash configuration file to export the environment variable (see line below). In our case, we use Python3.4 and define it in the &lt;code&gt;.profile&lt;/code&gt; file in the Bash home firectory (&lt;code&gt;~&lt;/code&gt;).&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;export PYSPARK_PYTHON=python3.4
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_nano_profile.PNG&#34; alt=&#34;Bash nano profile&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_nano_profile.PNG&#34; alt=&#34;Bash nano profile&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The PySpark shell now runs Python 3.4 as default (this obviously needs to be adjusted in case you like to run a different Python version).&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_python3.PNG&#34; alt=&#34;bash_pyspark_python3&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_python3.PNG&#34; alt=&#34;bash_pyspark_python3&#34; /&gt;&lt;/p&gt;
 </description>
     </item>
     
