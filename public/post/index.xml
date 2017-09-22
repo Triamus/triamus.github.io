@@ -2,20 +2,221 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on suspiciously datalicious</title>
-    <link>https://triamus.github.io/post/index.xml</link>
+    <link>/post/</link>
     <description>Recent content in Posts on suspiciously datalicious</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2017 Alexander Wagner</copyright>
     <lastBuildDate>Sun, 01 Jan 2017 00:00:00 +0000</lastBuildDate>
-    <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/post/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Install Spark on Windows</title>
+      <link>/post/install-spark-on-windows/</link>
+      <pubDate>Fri, 22 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/install-spark-on-windows/</guid>
+      <description>
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#Overview&#34;&gt;Overview&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#System requirements&#34;&gt;System requirements&lt;/a&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#A general note of caution for Bash on Windows&#34;&gt;A general note of caution for Bash on Windows&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#Install Java&#34;&gt;Install Java&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#Install Python&#34;&gt;Install Python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#Example output for system&#34;&gt;Example output for system&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#Install Scala&#34;&gt;Install Scala&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#Setting environment variables&#34;&gt;Setting environment variables&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#Download/clone windows utilities for corresponding Hadoop version&#34;&gt;Download/clone windows utilities for corresponding Hadoop version&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#Make /tmp/hive writable&#34;&gt;Make /tmp/hive writable&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#Run Spark shell&#34;&gt;Run Spark shell&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#Run PySpark&#34;&gt;Run PySpark&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
+
+&lt;p&gt;This is a quick tutorial how to install Spark on Windows via the pre-built on Apache Hadoop. It is assumed that the reader has basic knowledge of the Windows command line (CMD) and, if Bash should be used, a basic familiarity with Bash on Ubuntu on Windows (part of Linux Subsystem on Windows). We will demonstrate a basic example how to use Scala and Python (via PySpark) from the command line.&lt;/p&gt;
+
+&lt;h2 id=&#34;system-requirements&#34;&gt;System requirements&lt;/h2&gt;
+
+&lt;p&gt;We show how to install Spark on Windows 10 (see exact system info below) but generally it should also work on Windows 7. You will require&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Windows 10 (prior versions, i.e. Windows &amp;gt;= 7, may work but not tested)&lt;/li&gt;
+&lt;li&gt;Bash on Ubuntu on Windows (Linux subsystem on Windows) in case Bash should be used (not required per se)&lt;/li&gt;
+&lt;li&gt;Java runtime environment (JRE) or Java Development Kit (JDK) version &amp;gt;= 8&lt;/li&gt;
+&lt;li&gt;Scala&lt;/li&gt;
+&lt;li&gt;Python (in case you want to use PySpark)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;a-general-note-of-caution-for-bash-on-windows&#34;&gt;A general note of caution for Bash on Windows&lt;/h3&gt;
+
+&lt;p&gt;If you plan to set up Bash on Windows to work with Spark etc. you will eventually edit configuration files of the Linux on Windows subsystem. It is &lt;strong&gt;very important&lt;/strong&gt; that you do not use any Windows apps/tools to perform any operation on Linux files as these files may get corrupted. This includes using any Windows editor to edit Linux files (e.g. Notepad/++). For more details, see &lt;a href=&#34;https://blogs.msdn.microsoft.com/commandline/2016/11/17/do-not-change-linux-files-using-windows-apps-and-tools/&#34; target=&#34;_blank&#34;&gt;Do not change Linux files using Windows apps and tools&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;install-java&#34;&gt;Install Java&lt;/h3&gt;
+
+&lt;p&gt;Binary installers for Java can be downloaded from &lt;a href=&#34;http://www.oracle.com/technetwork/java/javase/downloads/index.html&#34; target=&#34;_blank&#34;&gt;Oracle Java SE&lt;/a&gt;. To run Spark, you only require a Java runtime environment (JRE) but you may also download the Java development kit (JDK) which includes the JRE. Note that the path to the JRE may be different when using a JDK.&lt;/p&gt;
+
+&lt;p&gt;You can check which version of Java you are running on the CMD via&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;java -version
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In case you like to use Bash, you will need to install Java on the Linux subsystem for Windows separately as it is a distinct OS. You can do so by following instructions from @rs6g10 on &lt;a href=&#34;https://github.com/Microsoft/BashOnWindows/issues/49&#34; target=&#34;_blank&#34;&gt;Microsoft/BashOnWindows/Unable to install Java JDK or Runtime #49&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;install-python&#34;&gt;Install Python&lt;/h3&gt;
+
+&lt;p&gt;If you like to use the Spark Python API via PySpark, you will need to install Python. A frequently recommended distribution is often that of &lt;a href=&#34;https://www.anaconda.com/download/&#34; target=&#34;_blank&#34;&gt;Anaconda&lt;/a&gt; as it ships with a lot of useful libraries and has binary installers for Windows. Note that Bash on Windows already comes with Python 2.7 pre-installed so in case you like to work with Python3, you will have to install it using standard Bash workflow.&lt;/p&gt;
+
+&lt;h3 id=&#34;example-output-for-system&#34;&gt;Example output for system&lt;/h3&gt;
+
+&lt;p&gt;We show how our system is set up (your&amp;rsquo;s will probably vary). Type below commands in CMD (in succession)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;systeminfo | findstr /B /C:&amp;quot;OS Name&amp;quot; /C:&amp;quot;OS Version&amp;quot;
+java -version
+python --version
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_system_and_version_info.PNG&#34; alt=&#34;CMD System Info&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can do the same for Bash (note the default version of Python)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_system_and_version_info.PNG&#34; alt=&#34;Bash System Info&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;install-scala&#34;&gt;Install Scala&lt;/h2&gt;
+
+&lt;p&gt;Generally, you can find Scala downloads &lt;a href=&#34;https://scala-lang.org/download/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;. Find the Windows installer (in my case clicking on scala-2.12.3.msi under section Archive) downloads &lt;a href=&#34;https://downloads.lightbend.com/scala/2.12.3/scala-2.12.3.msi&#34; target=&#34;_blank&#34;&gt;this&lt;/a&gt;. Follow installation wizard.&lt;/p&gt;
+
+&lt;p&gt;Once the installation is finished, open a new CMD and type&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;scala
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Your output should look like this&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_scala_check_after_install.PNG&#34; alt=&#34;CMD Scala Check&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;install-spark&#34;&gt;Install Spark&lt;/h2&gt;
+
+&lt;p&gt;Find the latest stable version of Spark on &lt;a href=&#34;http://spark.apache.org/downloads.html&#34; target=&#34;_blank&#34;&gt;Apache Spark Downloads&lt;/a&gt; and use pre-built on Hadoop and direct download.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/download_spark.PNG&#34; alt=&#34;Spark Download Page&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Copy/save the .tgz file to/at the location where you like Spark to reside and extract it from some Linux shell (e.g. Bash, Cygwin) via below command (your file name may vary). Alternatively, you can use some extraction software such as 7zip.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# in case tar program is not installed, install e.g. via sudo apt-get install tar
+tar xzfv spark-2.2.0-bin-hadoop2.7.tgz
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_extract_spark_tgz.PNG&#34; alt=&#34;Bash extract Spark&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After some time, your Spark install (extraction) should be done and a couple of folders being created at your chosen location.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/spark_directory.PNG&#34; alt=&#34;Spark Directory&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;setting-environment-variables&#34;&gt;Setting environment variables&lt;/h2&gt;
+
+&lt;p&gt;In order to make the system aware of all programs, we will be setting some environment variables. This can be done by simply using Windows search function in start menu and typing something like &lt;code&gt;environment variables&lt;/code&gt; and clicking the program &lt;code&gt;Edit the system environment variables&lt;/code&gt;. We will set the following variables (your location may vary)&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;JAVA_HOME: C:\Program Files\Java\jre1.8.0_144&lt;/li&gt;
+&lt;li&gt;SPARK_HOME: D:\spark\spark-2.2.0-bin-hadoop2.7&lt;/li&gt;
+&lt;li&gt;HADOOP_HOME: D:\spark\spark-2.2.0-bin-hadoop2.7\bin&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Moreover, we will expand the system path with&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;C:\Program Files\Java\jre1.8.0_144\bin&lt;/li&gt;
+&lt;li&gt;D:\spark\spark-2.2.0-bin-hadoop2.7\bin&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Note that the system environment variables are not necessarily shared with the Linux subsystem for Windows (although PATH seems to be shared). Any environment variable would thus have to be set in respective Linux configuration file.&lt;/p&gt;
+
+&lt;p&gt;Your Windows environment variables may look something like this now&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/windows_environment_variables.PNG&#34; alt=&#34;Windows Environment Variables&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;download-clone-windows-utilities-for-corresponding-hadoop-version&#34;&gt;Download/clone windows utilities for corresponding Hadoop version&lt;/h2&gt;
+
+&lt;p&gt;Go to &lt;a href=&#34;https://github.com/steveloughran/winutils&#34; target=&#34;_blank&#34;&gt;Github/steveloughran/winutils&lt;/a&gt; and clone/copy the Windows utilities for your Hadoop version to your local Hadoop directory. Copy \winutils-master\winutils-master\hadoop-2.7.1\bin and paste into your Spark install. For us this would be D:\spark\spark-2.2.0-bin-hadoop2.7\bin.&lt;/p&gt;
+
+&lt;h2 id=&#34;make-tmp-hive-writable&#34;&gt;Make /tmp/hive writable&lt;/h2&gt;
+
+&lt;p&gt;To avoid a common error (see e.g. &lt;a href=&#34;https://stackoverflow.com/questions/34196302/the-root-scratch-dir-tmp-hive-on-hdfs-should-be-writable-current-permissions&#34; target=&#34;_blank&#34;&gt;The root scratch dir: /tmp/hive on HDFS should be writable. Current permissions are: rw-rw-rw- (on Windows)&lt;/a&gt; or  &lt;a href=&#34;https://hernandezpaul.wordpress.com/2016/01/24/apache-spark-installation-on-windows-10/&#34; target=&#34;_blank&#34;&gt;Apache Spark installation on Windows 10&lt;/a&gt; open CMD as administrator and run below against your Spark directory where Winutils should reside (so in our case in D:\spark\spark-2.2.0-bin-hadoop2.7\bin\bin)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;D:\&amp;gt;spark\spark-2.2.0-bin-hadoop2.7\bin\bin\winutils.exe chmod 777 \tmp\hive
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;run-spark-shell&#34;&gt;Run Spark shell&lt;/h2&gt;
+
+&lt;p&gt;Finally, we can test our Spark installation by running the shell&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;spark-shell
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Your output should look something like below&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_spark-shell.PNG&#34; alt=&#34;CMD Initial Spark Shell&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We execute a minimal example from &lt;a href=&#34;http://spark.apache.org/docs/latest/quick-start.html&#34; target=&#34;_blank&#34;&gt;Apache Spark Quick Start&lt;/a&gt; (note that the README file is located one directory up) to test basic functionality.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-scala&#34;&gt;val textFile = spark.read.textFile(&amp;quot;../README.md&amp;quot;)
+textFile.count() // Number of items in this Dataset
+textFile.first() // First item in this Dataset
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_scala_initial_test.PNG&#34; alt=&#34;CMD Scala Initial Test&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Since the Linux subsystem for Windows inherits the Path variables from Windows, we can run the same without further adjustments on Bash on Ubuntu on Windows&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_spark-shell.PNG&#34; alt=&#34;Bash Spark Shell&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;run-pyspark&#34;&gt;Run PySpark&lt;/h2&gt;
+
+&lt;p&gt;Assuming you also want to use Python with Spark via &lt;a href=&#34;http://spark.apache.org/docs/2.1.0/api/python/pyspark.html&#34; target=&#34;_blank&#34;&gt;PySpark&lt;/a&gt; and have followed above setup instructions, you can open a new CMD and type below to test if PySpark works&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pyspark
+# we show it with bin/pyspark but both will work if your environment variables are properly set
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Again, we execute a minimal example from &lt;a href=&#34;we execute a minimal example from https://spark.apache.org/examples.html&#34; target=&#34;_blank&#34;&gt;Apache Spark Examples&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;text_file = sc.textFile(&amp;quot;README.md&amp;quot;)
+counts = text_file.flatMap(lambda line: line.split(&amp;quot; &amp;quot;)) \
+             .map(lambda word: (word, 1)) \
+             .reduceByKey(lambda a, b: a + b)
+print(counts)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_pyspark_initial_test.PNG&#34; alt=&#34;CMD PySpark Initial Test&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As before, the same command works in Bash but note the default Python version used&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_initial_test.PNG&#34; alt=&#34;Bash PySpark Initial Test&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In case you want to work with a different Python version, adjust respective Bash configuration file to export the environment variable (see line below). In our case, we use Python3.4 and define it in the &lt;code&gt;.profile&lt;/code&gt; file in the Bash home firectory (&lt;code&gt;~&lt;/code&gt;).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export PYSPARK_PYTHON=python3.4
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_nano_profile.PNG&#34; alt=&#34;Bash nano profile&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The PySpark shell now runs Python 3.4 as default (this obviously needs to be adjusted in case you like to run a different Python version).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_python3.PNG&#34; alt=&#34;bash_pyspark_python3&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>A Plain Markdown Post</title>
-      <link>https://triamus.github.io/post/2016-12-30-hello-markdown/</link>
+      <link>/post/2016-12-30-hello-markdown/</link>
       <pubDate>Fri, 30 Dec 2016 21:49:57 -0700</pubDate>
       
-      <guid>https://triamus.github.io/post/2016-12-30-hello-markdown/</guid>
+      <guid>/post/2016-12-30-hello-markdown/</guid>
       <description>&lt;p&gt;This is a post written in plain Markdown (&lt;code&gt;*.md&lt;/code&gt;) instead of R Markdown (&lt;code&gt;*.Rmd&lt;/code&gt;). The major differences are:&lt;/p&gt;
 
 &lt;ol&gt;
@@ -26,10 +227,10 @@
 &lt;p&gt;There are many differences in syntax between Blackfriday&amp;rsquo;s Markdown and Pandoc&amp;rsquo;s Markdown. For example, you can write a task list with Blackfriday but not with Pandoc:&lt;/p&gt;
 
 &lt;ul class=&#34;task-list&#34;&gt;
-&lt;li&gt;&lt;input type=&#34;checkbox&#34; checked disabled class=&#34;task-list-item&#34;&gt; Write an R package.&lt;/li&gt;
-&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; Write a book.&lt;/li&gt;
-&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &amp;hellip;&lt;/li&gt;
-&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; Profit!&lt;/li&gt;
+&lt;li&gt;&lt;label&gt;&lt;input type=&#34;checkbox&#34; checked disabled class=&#34;task-list-item&#34;&gt; Write an R package.&lt;/label&gt;&lt;/li&gt;
+&lt;li&gt;&lt;label&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; Write a book.&lt;/label&gt;&lt;/li&gt;
+&lt;li&gt;&lt;label&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &amp;hellip;&lt;/label&gt;&lt;/li&gt;
+&lt;li&gt;&lt;label&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; Profit!&lt;/label&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Similarly, Blackfriday does not support LaTeX math and Pandoc does. I have added the MathJax support to this theme (&lt;a href=&#34;https://github.com/yihui/hugo-lithium-theme&#34; target=&#34;_blank&#34;&gt;hugo-lithium-theme&lt;/a&gt;) but there is a caveat for plain Markdown posts: you have to include inline math expressions in  a pair of escaped parentheses &lt;code&gt;\( \)&lt;/code&gt; instead of dollar signs &lt;code&gt;$ $&lt;/code&gt;, e.g. &lt;code&gt;\(S_n = \sum_{i=1}^n X_i\)&lt;/code&gt;. For R Markdown posts, you can use &lt;code&gt;$ $&lt;/code&gt; to write inline math expressions.&lt;/p&gt;
@@ -43,10 +244,10 @@
     
     <item>
       <title>Getting started with the Academic framework for Hugo</title>
-      <link>https://triamus.github.io/post/getting-started/</link>
+      <link>/post/getting-started/</link>
       <pubDate>Wed, 20 Apr 2016 12:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/getting-started/</guid>
+      <guid>/post/getting-started/</guid>
       <description>
 
 &lt;p&gt;The Academic framework enables you to easily create a beautifully simple personal or academic website using the &lt;a href=&#34;https://gohugo.io&#34; target=&#34;_blank&#34;&gt;Hugo&lt;/a&gt; static site generator.&lt;/p&gt;
@@ -57,7 +258,7 @@
 &lt;li&gt;Easily manage your homepage, blog posts, publications, talks, and projects&lt;/li&gt;
 &lt;li&gt;Configurable widgets available for Biography, Publications, Projects, News/Blog, Talks, and Contact&lt;/li&gt;
 &lt;li&gt;Need a different section? Just use the Custom widget!&lt;/li&gt;
-&lt;li&gt;Write in &lt;a href=&#34;https://triamus.github.io/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;Markdown&lt;/a&gt; for easy formatting and code highlighting, with &lt;a href=&#34;https://en.wikibooks.org/wiki/LaTeX/Mathematics&#34; target=&#34;_blank&#34;&gt;LaTeX&lt;/a&gt; for mathematical expressions&lt;/li&gt;
+&lt;li&gt;Write in &lt;a href=&#34;/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;Markdown&lt;/a&gt; for easy formatting and code highlighting, with &lt;a href=&#34;https://en.wikibooks.org/wiki/LaTeX/Mathematics&#34; target=&#34;_blank&#34;&gt;LaTeX&lt;/a&gt; for mathematical expressions&lt;/li&gt;
 &lt;li&gt;Social/academic network linking, &lt;a href=&#34;https://analytics.google.com&#34; target=&#34;_blank&#34;&gt;Google Analytics&lt;/a&gt;, and &lt;a href=&#34;https://disqus.com&#34; target=&#34;_blank&#34;&gt;Disqus&lt;/a&gt; comments&lt;/li&gt;
 &lt;li&gt;Responsive and mobile friendly&lt;/li&gt;
 &lt;li&gt;Simple and refreshing one page design&lt;/li&gt;
@@ -121,15 +322,15 @@ cd my_website
 
 &lt;h3 id=&#34;customize-the-homepage&#34;&gt;Customize the homepage&lt;/h3&gt;
 
-&lt;p&gt;Refer to our guide on using &lt;a href=&#34;https://triamus.github.io/post/widgets/&#34; target=&#34;_blank&#34;&gt;widgets&lt;/a&gt; to customize your homepage.&lt;/p&gt;
+&lt;p&gt;Refer to our guide on using &lt;a href=&#34;/post/widgets/&#34; target=&#34;_blank&#34;&gt;widgets&lt;/a&gt; to customize your homepage.&lt;/p&gt;
 
 &lt;h3 id=&#34;add-your-content&#34;&gt;Add your content&lt;/h3&gt;
 
-&lt;p&gt;Refer to our guide on &lt;a href=&#34;https://triamus.github.io/post/managing-content/&#34; target=&#34;_blank&#34;&gt;managing content&lt;/a&gt; to create your own publications, blog posts, talks, and projects.&lt;/p&gt;
+&lt;p&gt;Refer to our guide on &lt;a href=&#34;/post/managing-content/&#34; target=&#34;_blank&#34;&gt;managing content&lt;/a&gt; to create your own publications, blog posts, talks, and projects.&lt;/p&gt;
 
 &lt;h3 id=&#34;remove-unused-widgets-and-pages&#34;&gt;Remove unused widgets and pages&lt;/h3&gt;
 
-&lt;p&gt;&lt;a href=&#34;https://triamus.github.io/post/managing-content/#removing-content&#34; target=&#34;_blank&#34;&gt;How to remove unused widgets and content pages&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;/post/managing-content/#removing-content&#34; target=&#34;_blank&#34;&gt;How to remove unused widgets and content pages&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h3 id=&#34;customization-upgrading&#34;&gt;Customization &amp;amp; Upgrading&lt;/h3&gt;
 
@@ -233,10 +434,10 @@ $ git log --pretty=oneline --abbrev-commit --decorate HEAD..upstream/master
     
     <item>
       <title>Customizing the homepage with widgets</title>
-      <link>https://triamus.github.io/post/widgets/</link>
+      <link>/post/widgets/</link>
       <pubDate>Wed, 20 Apr 2016 11:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/widgets/</guid>
+      <guid>/post/widgets/</guid>
       <description>
 
 &lt;p&gt;Homepage widgets display as sections on the homepage. They can be enabled/disabled and configured as desired. Academic has the following widgets available to use:&lt;/p&gt;
@@ -299,15 +500,15 @@ $ git log --pretty=oneline --abbrev-commit --decorate HEAD..upstream/master
     
     <item>
       <title>Managing content</title>
-      <link>https://triamus.github.io/post/managing-content/</link>
+      <link>/post/managing-content/</link>
       <pubDate>Wed, 20 Apr 2016 11:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/managing-content/</guid>
-      <description>&lt;p&gt;This is a brief guide to managing content with the Academic framework. Content can include publications, projects, talks, and news/blog articles. After you have read this guide about creating and managing content, you may also be interested to learn about &lt;a href=&#34;https://triamus.github.io/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;writing content with Markdown, LaTeX, and Shortcodes&lt;/a&gt;.&lt;/p&gt;
+      <guid>/post/managing-content/</guid>
+      <description>&lt;p&gt;This is a brief guide to managing content with the Academic framework. Content can include publications, projects, talks, and news/blog articles. After you have read this guide about creating and managing content, you may also be interested to learn about &lt;a href=&#34;/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;writing content with Markdown, LaTeX, and Shortcodes&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;To enable LaTeX math rendering for a page, you should include &lt;code&gt;math = true&lt;/code&gt; in the page&amp;rsquo;s &lt;code&gt;+++&lt;/code&gt; preamble, as demonstrated in the included example site. Otherwise, to enable math on the homepage or for all pages, you must globally set &lt;code&gt;math = true&lt;/code&gt; in &lt;code&gt;config.toml&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;To disable source code highlighting by default for all pages, set &lt;code&gt;highlight = false&lt;/code&gt; in &lt;code&gt;config.toml&lt;/code&gt;. You can then enable source code highlighting only on pages that need it by setting &lt;code&gt;highlight = true&lt;/code&gt; in that page&amp;rsquo;s preamble. See the &lt;a href=&#34;https://triamus.github.io/post/writing-markdown-latex/#code-highlighting&#34; target=&#34;_blank&#34;&gt;code-highlighting docs&lt;/a&gt; for more details.&lt;/p&gt;
+&lt;p&gt;To disable source code highlighting by default for all pages, set &lt;code&gt;highlight = false&lt;/code&gt; in &lt;code&gt;config.toml&lt;/code&gt;. You can then enable source code highlighting only on pages that need it by setting &lt;code&gt;highlight = true&lt;/code&gt; in that page&amp;rsquo;s preamble. See the &lt;a href=&#34;/post/writing-markdown-latex/#code-highlighting&#34; target=&#34;_blank&#34;&gt;code-highlighting docs&lt;/a&gt; for more details.&lt;/p&gt;
 
 &lt;p&gt;To display a featured image in content page headers, the parameters below can be inserted towards the end of a page&amp;rsquo;s &lt;code&gt;+++&lt;/code&gt; preamble. It is assumed that the image is located in your &lt;code&gt;static/img/&lt;/code&gt; folder, so the full path in the example below will be &lt;code&gt;static/img/headers/getting-started.png&lt;/code&gt;. The &lt;code&gt;caption&lt;/code&gt; parameter can be used to write an image caption or credit.&lt;/p&gt;
 
@@ -446,10 +647,10 @@ Below is an automatically generated list of all my blog posts!
     
     <item>
       <title>Writing content with Markdown, LaTeX, and Shortcodes</title>
-      <link>https://triamus.github.io/post/writing-markdown-latex/</link>
+      <link>/post/writing-markdown-latex/</link>
       <pubDate>Wed, 20 Apr 2016 10:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/writing-markdown-latex/</guid>
+      <guid>/post/writing-markdown-latex/</guid>
       <description>&lt;p&gt;Content can be written using &lt;a href=&#34;https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet&#34; target=&#34;_blank&#34;&gt;Markdown&lt;/a&gt;, &lt;a href=&#34;https://en.wikibooks.org/wiki/LaTeX/Mathematics&#34; target=&#34;_blank&#34;&gt;LaTeX math&lt;/a&gt;, and &lt;a href=&#34;http://gohugo.io/extras/shortcodes/&#34; target=&#34;_blank&#34;&gt;Hugo Shortcodes&lt;/a&gt;. Additionally, HTML may be used for advanced formatting. This article gives an overview of the most common formatting options.&lt;/p&gt;
 
 &lt;h2 id=&#34;sub-headings&#34;&gt;Sub-headings&lt;/h2&gt;
@@ -652,7 +853,7 @@ print(&amp;quot;You entered: {}&amp;quot;.format(input_string_var))
 
 &lt;p&gt;If the &lt;code&gt;highlight_languages&lt;/code&gt; option is set, then the corresponding javascript files will be served from the &lt;a href=&#34;https://cdnjs.com/libraries/highlight.js/&#34; target=&#34;_blank&#34;&gt;cdnjs server&lt;/a&gt;. To see a list of available languages, visit the &lt;a href=&#34;https://cdnjs.com/libraries/highlight.js/&#34; target=&#34;_blank&#34;&gt;cdnjs page&lt;/a&gt; and search for links with the word &amp;ldquo;languages&amp;rdquo;.&lt;/p&gt;
 
-&lt;p&gt;The &lt;code&gt;highlight_languages&lt;/code&gt; option provides an easy and convenient way to include support for additional languages to be severed from a CDN. If serving unmodified files from cdnjs doesn&amp;rsquo;t meet your needs, you can include javascript files for additional language support via one of the methods described in the &lt;a href=&#34;https://triamus.github.io/post/getting-started/#third-party-and-local-scripts-js&#34; target=&#34;_blank&#34;&gt;getting started guide&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;highlight_languages&lt;/code&gt; option provides an easy and convenient way to include support for additional languages to be severed from a CDN. If serving unmodified files from cdnjs doesn&amp;rsquo;t meet your needs, you can include javascript files for additional language support via one of the methods described in the &lt;a href=&#34;/post/getting-started/#third-party-and-local-scripts-js&#34; target=&#34;_blank&#34;&gt;getting started guide&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h4 id=&#34;option-highlight-style&#34;&gt;Option &lt;code&gt;highlight_style&lt;/code&gt;&lt;/h4&gt;
 
@@ -798,10 +999,10 @@ Here&#39;s some important information...
     
     <item>
       <title>Hello R Markdown</title>
-      <link>https://triamus.github.io/post/2015-07-23-r-rmarkdown/</link>
+      <link>/post/2015-07-23-r-rmarkdown/</link>
       <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
       
-      <guid>https://triamus.github.io/post/2015-07-23-r-rmarkdown/</guid>
+      <guid>/post/2015-07-23-r-rmarkdown/</guid>
       <description>&lt;div id=&#34;r-markdown&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;R Markdown&lt;/h1&gt;
 &lt;p&gt;This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see &lt;a href=&#34;http://rmarkdown.rstudio.com&#34; class=&#34;uri&#34;&gt;http://rmarkdown.rstudio.com&lt;/a&gt;.&lt;/p&gt;
@@ -846,13 +1047,13 @@ Figure 1: A fancy pie chart.
     
     <item>
       <title>Migrate from Jekyll to Hugo</title>
-      <link>https://triamus.github.io/post/migrate-from-jekyll/</link>
+      <link>/post/migrate-from-jekyll/</link>
       <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/migrate-from-jekyll/</guid>
+      <guid>/post/migrate-from-jekyll/</guid>
       <description>
 
-&lt;p&gt;Here are a few tips for migrating an existing website from Jekyll to Hugo. These tips can be applied in conjunction with following Hugo Academic&amp;rsquo;s &lt;a href=&#34;https://triamus.github.io/post/getting-started/&#34; target=&#34;_blank&#34;&gt;getting started guide&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Here are a few tips for migrating an existing website from Jekyll to Hugo. These tips can be applied in conjunction with following Hugo Academic&amp;rsquo;s &lt;a href=&#34;/post/getting-started/&#34; target=&#34;_blank&#34;&gt;getting started guide&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&#34;move-static-content-to-static&#34;&gt;Move static content to &lt;code&gt;static&lt;/code&gt;&lt;/h2&gt;
 
