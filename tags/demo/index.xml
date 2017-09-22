@@ -2,19 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Demo on suspiciously datalicious</title>
-    <link>https://triamus.github.io/tags/demo/index.xml</link>
+    <link>/tags/demo/</link>
     <description>Recent content in Demo on suspiciously datalicious</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2017 Alexander Wagner</copyright>
-    <atom:link href="/tags/demo/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 27 Apr 2016 00:00:00 +0000</lastBuildDate>
+    <atom:link href="/tags/demo/" rel="self" type="application/rss+xml" />
     
     <item>
       <title>External Project</title>
-      <link>https://triamus.github.io/project/example-external-project/</link>
+      <link>/project/example-external-project/</link>
       <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/project/example-external-project/</guid>
+      <guid>/project/example-external-project/</guid>
       <description></description>
     </item>
     
