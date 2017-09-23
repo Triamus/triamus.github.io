@@ -1,5 +1,5 @@
 ---
-title: Install Spark on Windows
+title: Install ApacheSpark on Windows
 author: Alexander Wagner
 date: '2017-09-22'
 slug: install-spark-on-windows
@@ -28,11 +28,11 @@ tags:
 
 ## Overview
 
-This is a quick tutorial how to install Spark on Windows via the pre-built on Apache Hadoop. It is assumed that the reader has basic knowledge of the Windows command line (CMD) and, if Bash should be used, a basic familiarity with Bash on Ubuntu on Windows (part of Linux Subsystem on Windows). We will demonstrate a basic example how to use Scala and Python (via PySpark) from the command line.
+This is a quick tutorial how to install ApacheSpark on Windows via the pre-built on Apache Hadoop. It is assumed that the reader has basic knowledge of the Windows command line (CMD) and, if Bash should be used, a basic familiarity with Bash on Ubuntu on Windows (part of Linux Subsystem on Windows). We will demonstrate a basic example how to use Scala and Python (via PySpark) from the command line.
 
 ## System requirements
 
-We show how to install Spark on Windows 10 (see exact system info below) but generally it should also work on Windows 7. You will require
+We show how to install Spark on Windows 10 (see exact system info below) but generally it should also work on Windows 7. You will require (we give install instructions below)
 
 * Windows 10 (prior versions, i.e. Windows >= 7, may work but not tested)
 * Bash on Ubuntu on Windows (Linux subsystem on Windows) in case Bash should be used (not required per se)
@@ -79,7 +79,7 @@ We can do the same for Bash (note the default version of Python)
 
 ## Install Scala
 
-Generally, you can find Scala downloads [here](https://scala-lang.org/download/). Find the Windows installer (in my case clicking on scala-2.12.3.msi under section Archive) downloads [this](https://downloads.lightbend.com/scala/2.12.3/scala-2.12.3.msi). Follow installation wizard.
+Generally, you can find Scala downloads [here](https://scala-lang.org/download/). Find the Windows installer (in our case clicking on scala-2.12.3.msi under section Archive) downloads [this](https://downloads.lightbend.com/scala/2.12.3/scala-2.12.3.msi). Follow installation wizard.
 
 Once the installation is finished, open a new CMD and type
 
@@ -193,7 +193,7 @@ As before, the same command works in Bash but note the default Python version us
 
 ![Bash PySpark Initial Test](/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_initial_test.PNG)
 
-In case you want to work with a different Python version, adjust respective Bash configuration file to export the environment variable (see line below). In our case, we use Python3.4 and define it in the `.profile` file in the Bash home firectory (`~`).
+In case you want to work with a different Python version, adjust respective Bash configuration file to export the environment variable (see line below). In our case, we use Python3.4 and define it in the `.profile` file in the Bash home directory (`~`).
 
 ```
 export PYSPARK_PYTHON=python3.4

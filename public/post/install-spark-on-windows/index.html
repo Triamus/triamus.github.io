@@ -28,17 +28,17 @@
   <link rel="stylesheet" href="/css/hugo-academic.css">
   
 
-  <link rel="alternate" href="https://triamus.github.io/index.xml" type="application/rss+xml" title="suspiciously datalicious">
-  <link rel="feed" href="https://triamus.github.io/index.xml" type="application/rss+xml" title="suspiciously datalicious">
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="suspiciously datalicious">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="suspiciously datalicious">
 
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/apple-touch-icon.png">
 
-  <link rel="canonical" href="https://triamus.github.io/post/install-spark-on-windows/">
+  <link rel="canonical" href="/post/install-spark-on-windows/">
 
   
 
-  <title>Install Spark on Windows | suspiciously datalicious</title>
+  <title>Install ApacheSpark on Windows | suspiciously datalicious</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#navbar-main" data-offset="71">
@@ -124,7 +124,7 @@
   
 
   <div class="article-container">
-    <h1 itemprop="name">Install Spark on Windows</h1>
+    <h1 itemprop="name">Install ApacheSpark on Windows</h1>
     
 
 <div class="article-metadata">
@@ -179,35 +179,35 @@
   <ul class="share">
     <li>
       <a class="facebook"
-         href="https://www.facebook.com/sharer.php?u=https%3a%2f%2ftriamus.github.io%2fpost%2finstall-spark-on-windows%2f"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2finstall-spark-on-windows%2f"
          target="_blank">
         <i class="fa fa-facebook"></i>
       </a>
     </li>
     <li>
       <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=Install%20Spark%20on%20Windows&amp;url=https%3a%2f%2ftriamus.github.io%2fpost%2finstall-spark-on-windows%2f"
+         href="https://twitter.com/intent/tweet?text=Install%20ApacheSpark%20on%20Windows&amp;url=%2fpost%2finstall-spark-on-windows%2f"
          target="_blank">
         <i class="fa fa-twitter"></i>
       </a>
     </li>
     <li>
       <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2ftriamus.github.io%2fpost%2finstall-spark-on-windows%2f&amp;title=Install%20Spark%20on%20Windows"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2finstall-spark-on-windows%2f&amp;title=Install%20ApacheSpark%20on%20Windows"
          target="_blank">
         <i class="fa fa-linkedin"></i>
       </a>
     </li>
     <li>
       <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=https%3a%2f%2ftriamus.github.io%2fpost%2finstall-spark-on-windows%2f&amp;title=Install%20Spark%20on%20Windows"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2finstall-spark-on-windows%2f&amp;title=Install%20ApacheSpark%20on%20Windows"
          target="_blank">
         <i class="fa fa-weibo"></i>
       </a>
     </li>
     <li>
       <a class="email"
-         href="mailto:?subject=Install%20Spark%20on%20Windows&amp;body=https%3a%2f%2ftriamus.github.io%2fpost%2finstall-spark-on-windows%2f">
+         href="mailto:?subject=Install%20ApacheSpark%20on%20Windows&amp;body=%2fpost%2finstall-spark-on-windows%2f">
         <i class="fa fa-envelope"></i>
       </a>
     </li>
@@ -242,11 +242,11 @@
 
 <h2 id="overview">Overview</h2>
 
-<p>This is a quick tutorial how to install Spark on Windows via the pre-built on Apache Hadoop. It is assumed that the reader has basic knowledge of the Windows command line (CMD) and, if Bash should be used, a basic familiarity with Bash on Ubuntu on Windows (part of Linux Subsystem on Windows). We will demonstrate a basic example how to use Scala and Python (via PySpark) from the command line.</p>
+<p>This is a quick tutorial how to install ApacheSpark on Windows via the pre-built on Apache Hadoop. It is assumed that the reader has basic knowledge of the Windows command line (CMD) and, if Bash should be used, a basic familiarity with Bash on Ubuntu on Windows (part of Linux Subsystem on Windows). We will demonstrate a basic example how to use Scala and Python (via PySpark) from the command line.</p>
 
 <h2 id="system-requirements">System requirements</h2>
 
-<p>We show how to install Spark on Windows 10 (see exact system info below) but generally it should also work on Windows 7. You will require</p>
+<p>We show how to install Spark on Windows 10 (see exact system info below) but generally it should also work on Windows 7. You will require (we give install instructions below)</p>
 
 <ul>
 <li>Windows 10 (prior versions, i.e. Windows &gt;= 7, may work but not tested)</li>
@@ -292,7 +292,7 @@ python --version
 
 <h2 id="install-scala">Install Scala</h2>
 
-<p>Generally, you can find Scala downloads <a href="https://scala-lang.org/download/" target="_blank">here</a>. Find the Windows installer (in my case clicking on scala-2.12.3.msi under section Archive) downloads <a href="https://downloads.lightbend.com/scala/2.12.3/scala-2.12.3.msi" target="_blank">this</a>. Follow installation wizard.</p>
+<p>Generally, you can find Scala downloads <a href="https://scala-lang.org/download/" target="_blank">here</a>. Find the Windows installer (in our case clicking on scala-2.12.3.msi under section Archive) downloads <a href="https://downloads.lightbend.com/scala/2.12.3/scala-2.12.3.msi" target="_blank">this</a>. Follow installation wizard.</p>
 
 <p>Once the installation is finished, open a new CMD and type</p>
 
@@ -402,7 +402,7 @@ print(counts)
 
 <p><img src="/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_initial_test.PNG" alt="Bash PySpark Initial Test" /></p>
 
-<p>In case you want to work with a different Python version, adjust respective Bash configuration file to export the environment variable (see line below). In our case, we use Python3.4 and define it in the <code>.profile</code> file in the Bash home firectory (<code>~</code>).</p>
+<p>In case you want to work with a different Python version, adjust respective Bash configuration file to export the environment variable (see line below). In our case, we use Python3.4 and define it in the <code>.profile</code> file in the Bash home directory (<code>~</code>).</p>
 
 <pre><code>export PYSPARK_PYTHON=python3.4
 </code></pre>
@@ -422,7 +422,7 @@ print(counts)
   <nav>
   <ul class="pager">
     
-    <li class="previous"><a href="https://triamus.github.io/post/2016-12-30-hello-markdown/"><span
+    <li class="previous"><a href="/post/2016-12-30-hello-markdown/"><span
       aria-hidden="true">&larr;</span> A Plain Markdown Post</a></li>
     
 
