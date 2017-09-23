@@ -26,12 +26,15 @@ view = 1
   tag = "*"
   
 [[filter]]
-  name = "Deep Learning"
-  tag = ".deep-learning"
+  name = "Data Science"
+  tag = ".data-science"
+
+[[filter]]
+  name = "Raspberry Pi"
+  tag = ".raspberry-pi"
 
 [[filter]]
   name = "Other"
-  tag = ".demo"
-
+  tag = ".other"
 +++
 
