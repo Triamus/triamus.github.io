@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on suspiciously datalicious</title>
-    <link>https://triamus.github.io/post/</link>
+    <link>/post/</link>
     <description>Recent content in Posts on suspiciously datalicious</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -12,10 +12,10 @@
     
     <item>
       <title>Install Docker on Windows</title>
-      <link>https://triamus.github.io/post/install-docker-on-windows/</link>
+      <link>/post/install-docker-on-windows/</link>
       <pubDate>Sat, 07 Oct 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/install-docker-on-windows/</guid>
+      <guid>/post/install-docker-on-windows/</guid>
       <description>&lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#overview&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Overview&lt;/a&gt;&lt;/li&gt;
@@ -46,12 +46,12 @@
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Install Docker&lt;/h1&gt;
 &lt;p&gt;The installation is best performed by using officially provided binary installer from &lt;a href=&#34;https://docs.docker.com/docker-for-windows/install/&#34;&gt;Docker webpage&lt;/a&gt;. We recommend the stable version unless you need latest changes from development version. Once the installation is through (and PC restarted) Docker should be automatically running indicated by its icon showing in the task bar.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_docker_is_running.png&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_docker_is_running.png&#34; /&gt;
 
 &lt;/div&gt;
 &lt;p&gt;In case it is not running for you, one reason might be that the automatic enabling of Hyper-V during the Docker installation did not work. Check the official Microsoft page on Hyper-V at &lt;a href=&#34;https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v&#34;&gt;Install Hyper-V on Windows 10&lt;/a&gt; to see a couple of ways to enable it. Also note that Hyper-V activation and virtualization activation are not the same thing so make sure virtualization is enabled in BIOS, too (usually the case if you used virtual machines before, e.g. via VirtualBox). See how to enable it at &lt;a href=&#34;https://blogs.technet.microsoft.com/canitpro/2015/09/08/step-by-step-enabling-hyper-v-for-use-on-windows-10/&#34;&gt;Step-By-Step: Enabling Hyper-V for use on Windows 10&lt;/a&gt;.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_docker_activate_hyper-v.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_docker_activate_hyper-v.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;p&gt;You can also check Hyper-V status on a detailed level via &lt;code&gt;Powershell&lt;/code&gt; using below (run as admin)&lt;/p&gt;
@@ -66,17 +66,17 @@
 &lt;pre&gt;&lt;code&gt;docker --version
 docker run hello-world&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_version.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_version.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_hello_world.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_hello_world.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;p&gt;Finally you can run a more demanding example by running a Linux Ubuntu Bash terminal (this may take some time depending on your bandwidth as the complete Ubuntu image is pulled). Note that you are made &lt;code&gt;root&lt;/code&gt; user in the shell.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;docker run -it ubuntu bash&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_run_it_ubuntu_bash.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_run_it_ubuntu_bash.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -85,7 +85,7 @@ docker run hello-world&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;As CMD, Powershell should work out of the box so we only show the hello-world example here again. Note that the image is not pulled again as we had just used it before in CMD.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;docker run hello-world&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_ps_docker_hello_world.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_ps_docker_hello_world.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -102,11 +102,11 @@ docker run hello-world&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;docker --version
 docker run hello-world&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_bash_docker_version.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_bash_docker_version.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_bash_docker_hello_world.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_bash_docker_hello_world.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -116,10 +116,10 @@ docker run hello-world&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Install ApacheSpark on Windows</title>
-      <link>https://triamus.github.io/post/2017-09-22-install-spark-on-windows/</link>
+      <link>/post/2017-09-22-install-spark-on-windows/</link>
       <pubDate>Fri, 22 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/2017-09-22-install-spark-on-windows/</guid>
+      <guid>/post/2017-09-22-install-spark-on-windows/</guid>
       <description>
 
 &lt;ul&gt;
@@ -184,11 +184,11 @@ java -version
 python --version
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_system_and_version_info.PNG&#34; alt=&#34;CMD System Info&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_system_and_version_info.PNG&#34; alt=&#34;CMD System Info&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We can do the same for Bash (note the default version of Python)&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_system_and_version_info.PNG&#34; alt=&#34;Bash System Info&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_system_and_version_info.PNG&#34; alt=&#34;Bash System Info&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;install-scala&#34;&gt;Install Scala&lt;/h2&gt;
 
@@ -201,13 +201,13 @@ python --version
 
 &lt;p&gt;Your output should look like this&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_scala_check_after_install.PNG&#34; alt=&#34;CMD Scala Check&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_scala_check_after_install.PNG&#34; alt=&#34;CMD Scala Check&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;install-spark&#34;&gt;Install Spark&lt;/h2&gt;
 
 &lt;p&gt;Find the latest stable version of Spark on &lt;a href=&#34;http://spark.apache.org/downloads.html&#34; target=&#34;_blank&#34;&gt;Apache Spark Downloads&lt;/a&gt; and use pre-built on Hadoop and direct download.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/download_spark.PNG&#34; alt=&#34;Spark Download Page&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/download_spark.PNG&#34; alt=&#34;Spark Download Page&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Copy/save the .tgz file to/at the location where you like Spark to reside and extract it from some Linux shell (e.g. Bash, Cygwin) via below command (your file name may vary). Alternatively, you can use some extraction software such as 7zip.&lt;/p&gt;
 
@@ -215,11 +215,11 @@ python --version
 tar xzfv spark-2.2.0-bin-hadoop2.7.tgz
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_extract_spark_tgz.PNG&#34; alt=&#34;Bash extract Spark&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_extract_spark_tgz.PNG&#34; alt=&#34;Bash extract Spark&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;After some time, your Spark install (extraction) should be done and a couple of folders being created at your chosen location.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/spark_directory.png&#34; alt=&#34;Spark Directory&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/spark_directory.png&#34; alt=&#34;Spark Directory&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;setting-environment-variables&#34;&gt;Setting environment variables&lt;/h2&gt;
 
@@ -242,7 +242,7 @@ tar xzfv spark-2.2.0-bin-hadoop2.7.tgz
 
 &lt;p&gt;Your Windows environment variables may look something like this now&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/windows_environment_variables.PNG&#34; alt=&#34;Windows Environment Variables&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/windows_environment_variables.PNG&#34; alt=&#34;Windows Environment Variables&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;download-clone-windows-utilities-for-corresponding-hadoop-version&#34;&gt;Download/clone windows utilities for corresponding Hadoop version&lt;/h2&gt;
 
@@ -264,7 +264,7 @@ tar xzfv spark-2.2.0-bin-hadoop2.7.tgz
 
 &lt;p&gt;Your output should look something like below&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_spark-shell.PNG&#34; alt=&#34;CMD Initial Spark Shell&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_spark-shell.PNG&#34; alt=&#34;CMD Initial Spark Shell&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We execute a minimal example from &lt;a href=&#34;http://spark.apache.org/docs/latest/quick-start.html&#34; target=&#34;_blank&#34;&gt;Apache Spark Quick Start&lt;/a&gt; (note that the README file is located one directory up) to test basic functionality.&lt;/p&gt;
 
@@ -273,11 +273,11 @@ textFile.count() // Number of items in this Dataset
 textFile.first() // First item in this Dataset
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_scala_initial_test.PNG&#34; alt=&#34;CMD Scala Initial Test&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_scala_initial_test.PNG&#34; alt=&#34;CMD Scala Initial Test&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Since the Linux subsystem for Windows inherits the Path variables from Windows, we can run the same without further adjustments on Bash on Ubuntu on Windows&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_spark-shell.PNG&#34; alt=&#34;Bash Spark Shell&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_spark-shell.PNG&#34; alt=&#34;Bash Spark Shell&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;run-pyspark&#34;&gt;Run PySpark&lt;/h2&gt;
 
@@ -296,31 +296,31 @@ counts = text_file.flatMap(lambda line: line.split(&amp;quot; &amp;quot;)) \
 print(counts)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_pyspark_initial_test.PNG&#34; alt=&#34;CMD PySpark Initial Test&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_pyspark_initial_test.PNG&#34; alt=&#34;CMD PySpark Initial Test&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As before, the same command works in Bash but note the default Python version used&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_initial_test.PNG&#34; alt=&#34;Bash PySpark Initial Test&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_initial_test.PNG&#34; alt=&#34;Bash PySpark Initial Test&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In case you want to work with a different Python version, adjust respective Bash configuration file to export the environment variable (see line below). In our case, we use Python3.4 and define it in the &lt;code&gt;.profile&lt;/code&gt; file in the Bash home directory (&lt;code&gt;~&lt;/code&gt;).&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;export PYSPARK_PYTHON=python3.4
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_nano_profile.PNG&#34; alt=&#34;Bash nano profile&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_nano_profile.PNG&#34; alt=&#34;Bash nano profile&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The PySpark shell now runs Python 3.4 as default (this obviously needs to be adjusted in case you like to run a different Python version).&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_python3.PNG&#34; alt=&#34;bash_pyspark_python3&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_python3.PNG&#34; alt=&#34;bash_pyspark_python3&#34; /&gt;&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>A Plain Markdown Post</title>
-      <link>https://triamus.github.io/post/2016-12-30-hello-markdown/</link>
+      <link>/post/2016-12-30-hello-markdown/</link>
       <pubDate>Fri, 30 Dec 2016 21:49:57 -0700</pubDate>
       
-      <guid>https://triamus.github.io/post/2016-12-30-hello-markdown/</guid>
+      <guid>/post/2016-12-30-hello-markdown/</guid>
       <description>&lt;p&gt;This is a post written in plain Markdown (&lt;code&gt;*.md&lt;/code&gt;) instead of R Markdown (&lt;code&gt;*.Rmd&lt;/code&gt;). The major differences are:&lt;/p&gt;
 
 &lt;ol&gt;
@@ -348,10 +348,10 @@ print(counts)
     
     <item>
       <title>Getting started with the Academic framework for Hugo</title>
-      <link>https://triamus.github.io/post/getting-started/</link>
+      <link>/post/getting-started/</link>
       <pubDate>Wed, 20 Apr 2016 12:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/getting-started/</guid>
+      <guid>/post/getting-started/</guid>
       <description>
 
 &lt;p&gt;The Academic framework enables you to easily create a beautifully simple personal or academic website using the &lt;a href=&#34;https://gohugo.io&#34; target=&#34;_blank&#34;&gt;Hugo&lt;/a&gt; static site generator.&lt;/p&gt;
@@ -362,7 +362,7 @@ print(counts)
 &lt;li&gt;Easily manage your homepage, blog posts, publications, talks, and projects&lt;/li&gt;
 &lt;li&gt;Configurable widgets available for Biography, Publications, Projects, News/Blog, Talks, and Contact&lt;/li&gt;
 &lt;li&gt;Need a different section? Just use the Custom widget!&lt;/li&gt;
-&lt;li&gt;Write in &lt;a href=&#34;https://triamus.github.io/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;Markdown&lt;/a&gt; for easy formatting and code highlighting, with &lt;a href=&#34;https://en.wikibooks.org/wiki/LaTeX/Mathematics&#34; target=&#34;_blank&#34;&gt;LaTeX&lt;/a&gt; for mathematical expressions&lt;/li&gt;
+&lt;li&gt;Write in &lt;a href=&#34;/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;Markdown&lt;/a&gt; for easy formatting and code highlighting, with &lt;a href=&#34;https://en.wikibooks.org/wiki/LaTeX/Mathematics&#34; target=&#34;_blank&#34;&gt;LaTeX&lt;/a&gt; for mathematical expressions&lt;/li&gt;
 &lt;li&gt;Social/academic network linking, &lt;a href=&#34;https://analytics.google.com&#34; target=&#34;_blank&#34;&gt;Google Analytics&lt;/a&gt;, and &lt;a href=&#34;https://disqus.com&#34; target=&#34;_blank&#34;&gt;Disqus&lt;/a&gt; comments&lt;/li&gt;
 &lt;li&gt;Responsive and mobile friendly&lt;/li&gt;
 &lt;li&gt;Simple and refreshing one page design&lt;/li&gt;
@@ -426,15 +426,15 @@ cd my_website
 
 &lt;h3 id=&#34;customize-the-homepage&#34;&gt;Customize the homepage&lt;/h3&gt;
 
-&lt;p&gt;Refer to our guide on using &lt;a href=&#34;https://triamus.github.io/post/widgets/&#34; target=&#34;_blank&#34;&gt;widgets&lt;/a&gt; to customize your homepage.&lt;/p&gt;
+&lt;p&gt;Refer to our guide on using &lt;a href=&#34;/post/widgets/&#34; target=&#34;_blank&#34;&gt;widgets&lt;/a&gt; to customize your homepage.&lt;/p&gt;
 
 &lt;h3 id=&#34;add-your-content&#34;&gt;Add your content&lt;/h3&gt;
 
-&lt;p&gt;Refer to our guide on &lt;a href=&#34;https://triamus.github.io/post/managing-content/&#34; target=&#34;_blank&#34;&gt;managing content&lt;/a&gt; to create your own publications, blog posts, talks, and projects.&lt;/p&gt;
+&lt;p&gt;Refer to our guide on &lt;a href=&#34;/post/managing-content/&#34; target=&#34;_blank&#34;&gt;managing content&lt;/a&gt; to create your own publications, blog posts, talks, and projects.&lt;/p&gt;
 
 &lt;h3 id=&#34;remove-unused-widgets-and-pages&#34;&gt;Remove unused widgets and pages&lt;/h3&gt;
 
-&lt;p&gt;&lt;a href=&#34;https://triamus.github.io/post/managing-content/#removing-content&#34; target=&#34;_blank&#34;&gt;How to remove unused widgets and content pages&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;/post/managing-content/#removing-content&#34; target=&#34;_blank&#34;&gt;How to remove unused widgets and content pages&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h3 id=&#34;customization-upgrading&#34;&gt;Customization &amp;amp; Upgrading&lt;/h3&gt;
 
@@ -538,10 +538,10 @@ $ git log --pretty=oneline --abbrev-commit --decorate HEAD..upstream/master
     
     <item>
       <title>Customizing the homepage with widgets</title>
-      <link>https://triamus.github.io/post/widgets/</link>
+      <link>/post/widgets/</link>
       <pubDate>Wed, 20 Apr 2016 11:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/widgets/</guid>
+      <guid>/post/widgets/</guid>
       <description>
 
 &lt;p&gt;Homepage widgets display as sections on the homepage. They can be enabled/disabled and configured as desired. Academic has the following widgets available to use:&lt;/p&gt;
@@ -604,15 +604,15 @@ $ git log --pretty=oneline --abbrev-commit --decorate HEAD..upstream/master
     
     <item>
       <title>Managing content</title>
-      <link>https://triamus.github.io/post/managing-content/</link>
+      <link>/post/managing-content/</link>
       <pubDate>Wed, 20 Apr 2016 11:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/managing-content/</guid>
-      <description>&lt;p&gt;This is a brief guide to managing content with the Academic framework. Content can include publications, projects, talks, and news/blog articles. After you have read this guide about creating and managing content, you may also be interested to learn about &lt;a href=&#34;https://triamus.github.io/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;writing content with Markdown, LaTeX, and Shortcodes&lt;/a&gt;.&lt;/p&gt;
+      <guid>/post/managing-content/</guid>
+      <description>&lt;p&gt;This is a brief guide to managing content with the Academic framework. Content can include publications, projects, talks, and news/blog articles. After you have read this guide about creating and managing content, you may also be interested to learn about &lt;a href=&#34;/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;writing content with Markdown, LaTeX, and Shortcodes&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;To enable LaTeX math rendering for a page, you should include &lt;code&gt;math = true&lt;/code&gt; in the page&amp;rsquo;s &lt;code&gt;+++&lt;/code&gt; preamble, as demonstrated in the included example site. Otherwise, to enable math on the homepage or for all pages, you must globally set &lt;code&gt;math = true&lt;/code&gt; in &lt;code&gt;config.toml&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;To disable source code highlighting by default for all pages, set &lt;code&gt;highlight = false&lt;/code&gt; in &lt;code&gt;config.toml&lt;/code&gt;. You can then enable source code highlighting only on pages that need it by setting &lt;code&gt;highlight = true&lt;/code&gt; in that page&amp;rsquo;s preamble. See the &lt;a href=&#34;https://triamus.github.io/post/writing-markdown-latex/#code-highlighting&#34; target=&#34;_blank&#34;&gt;code-highlighting docs&lt;/a&gt; for more details.&lt;/p&gt;
+&lt;p&gt;To disable source code highlighting by default for all pages, set &lt;code&gt;highlight = false&lt;/code&gt; in &lt;code&gt;config.toml&lt;/code&gt;. You can then enable source code highlighting only on pages that need it by setting &lt;code&gt;highlight = true&lt;/code&gt; in that page&amp;rsquo;s preamble. See the &lt;a href=&#34;/post/writing-markdown-latex/#code-highlighting&#34; target=&#34;_blank&#34;&gt;code-highlighting docs&lt;/a&gt; for more details.&lt;/p&gt;
 
 &lt;p&gt;To display a featured image in content page headers, the parameters below can be inserted towards the end of a page&amp;rsquo;s &lt;code&gt;+++&lt;/code&gt; preamble. It is assumed that the image is located in your &lt;code&gt;static/img/&lt;/code&gt; folder, so the full path in the example below will be &lt;code&gt;static/img/headers/getting-started.png&lt;/code&gt;. The &lt;code&gt;caption&lt;/code&gt; parameter can be used to write an image caption or credit.&lt;/p&gt;
 
@@ -751,10 +751,10 @@ Below is an automatically generated list of all my blog posts!
     
     <item>
       <title>Writing content with Markdown, LaTeX, and Shortcodes</title>
-      <link>https://triamus.github.io/post/writing-markdown-latex/</link>
+      <link>/post/writing-markdown-latex/</link>
       <pubDate>Wed, 20 Apr 2016 10:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/writing-markdown-latex/</guid>
+      <guid>/post/writing-markdown-latex/</guid>
       <description>&lt;p&gt;Content can be written using &lt;a href=&#34;https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet&#34; target=&#34;_blank&#34;&gt;Markdown&lt;/a&gt;, &lt;a href=&#34;https://en.wikibooks.org/wiki/LaTeX/Mathematics&#34; target=&#34;_blank&#34;&gt;LaTeX math&lt;/a&gt;, and &lt;a href=&#34;http://gohugo.io/extras/shortcodes/&#34; target=&#34;_blank&#34;&gt;Hugo Shortcodes&lt;/a&gt;. Additionally, HTML may be used for advanced formatting. This article gives an overview of the most common formatting options.&lt;/p&gt;
 
 &lt;h2 id=&#34;sub-headings&#34;&gt;Sub-headings&lt;/h2&gt;
@@ -957,7 +957,7 @@ print(&amp;quot;You entered: {}&amp;quot;.format(input_string_var))
 
 &lt;p&gt;If the &lt;code&gt;highlight_languages&lt;/code&gt; option is set, then the corresponding javascript files will be served from the &lt;a href=&#34;https://cdnjs.com/libraries/highlight.js/&#34; target=&#34;_blank&#34;&gt;cdnjs server&lt;/a&gt;. To see a list of available languages, visit the &lt;a href=&#34;https://cdnjs.com/libraries/highlight.js/&#34; target=&#34;_blank&#34;&gt;cdnjs page&lt;/a&gt; and search for links with the word &amp;ldquo;languages&amp;rdquo;.&lt;/p&gt;
 
-&lt;p&gt;The &lt;code&gt;highlight_languages&lt;/code&gt; option provides an easy and convenient way to include support for additional languages to be severed from a CDN. If serving unmodified files from cdnjs doesn&amp;rsquo;t meet your needs, you can include javascript files for additional language support via one of the methods described in the &lt;a href=&#34;https://triamus.github.io/post/getting-started/#third-party-and-local-scripts-js&#34; target=&#34;_blank&#34;&gt;getting started guide&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;highlight_languages&lt;/code&gt; option provides an easy and convenient way to include support for additional languages to be severed from a CDN. If serving unmodified files from cdnjs doesn&amp;rsquo;t meet your needs, you can include javascript files for additional language support via one of the methods described in the &lt;a href=&#34;/post/getting-started/#third-party-and-local-scripts-js&#34; target=&#34;_blank&#34;&gt;getting started guide&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h4 id=&#34;option-highlight-style&#34;&gt;Option &lt;code&gt;highlight_style&lt;/code&gt;&lt;/h4&gt;
 
@@ -1103,10 +1103,10 @@ Here&#39;s some important information...
     
     <item>
       <title>Hello R Markdown</title>
-      <link>https://triamus.github.io/post/2015-07-23-r-rmarkdown/</link>
+      <link>/post/2015-07-23-r-rmarkdown/</link>
       <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
       
-      <guid>https://triamus.github.io/post/2015-07-23-r-rmarkdown/</guid>
+      <guid>/post/2015-07-23-r-rmarkdown/</guid>
       <description>&lt;div id=&#34;r-markdown&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;R Markdown&lt;/h1&gt;
 &lt;p&gt;This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see &lt;a href=&#34;http://rmarkdown.rstudio.com&#34; class=&#34;uri&#34;&gt;http://rmarkdown.rstudio.com&lt;/a&gt;.&lt;/p&gt;
@@ -1151,13 +1151,13 @@ Figure 1: A fancy pie chart.
     
     <item>
       <title>Migrate from Jekyll to Hugo</title>
-      <link>https://triamus.github.io/post/migrate-from-jekyll/</link>
+      <link>/post/migrate-from-jekyll/</link>
       <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/migrate-from-jekyll/</guid>
+      <guid>/post/migrate-from-jekyll/</guid>
       <description>
 
-&lt;p&gt;Here are a few tips for migrating an existing website from Jekyll to Hugo. These tips can be applied in conjunction with following Hugo Academic&amp;rsquo;s &lt;a href=&#34;https://triamus.github.io/post/getting-started/&#34; target=&#34;_blank&#34;&gt;getting started guide&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Here are a few tips for migrating an existing website from Jekyll to Hugo. These tips can be applied in conjunction with following Hugo Academic&amp;rsquo;s &lt;a href=&#34;/post/getting-started/&#34; target=&#34;_blank&#34;&gt;getting started guide&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&#34;move-static-content-to-static&#34;&gt;Move static content to &lt;code&gt;static&lt;/code&gt;&lt;/h2&gt;
 

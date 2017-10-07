@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Infrastructure on suspiciously datalicious</title>
-    <link>https://triamus.github.io/categories/infrastructure/</link>
+    <link>/categories/infrastructure/</link>
     <description>Recent content in Infrastructure on suspiciously datalicious</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -12,10 +12,10 @@
     
     <item>
       <title>Install Docker on Windows</title>
-      <link>https://triamus.github.io/post/install-docker-on-windows/</link>
+      <link>/post/install-docker-on-windows/</link>
       <pubDate>Sat, 07 Oct 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/install-docker-on-windows/</guid>
+      <guid>/post/install-docker-on-windows/</guid>
       <description>&lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#overview&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Overview&lt;/a&gt;&lt;/li&gt;
@@ -46,12 +46,12 @@
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Install Docker&lt;/h1&gt;
 &lt;p&gt;The installation is best performed by using officially provided binary installer from &lt;a href=&#34;https://docs.docker.com/docker-for-windows/install/&#34;&gt;Docker webpage&lt;/a&gt;. We recommend the stable version unless you need latest changes from development version. Once the installation is through (and PC restarted) Docker should be automatically running indicated by its icon showing in the task bar.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_docker_is_running.png&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_docker_is_running.png&#34; /&gt;
 
 &lt;/div&gt;
 &lt;p&gt;In case it is not running for you, one reason might be that the automatic enabling of Hyper-V during the Docker installation did not work. Check the official Microsoft page on Hyper-V at &lt;a href=&#34;https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v&#34;&gt;Install Hyper-V on Windows 10&lt;/a&gt; to see a couple of ways to enable it. Also note that Hyper-V activation and virtualization activation are not the same thing so make sure virtualization is enabled in BIOS, too (usually the case if you used virtual machines before, e.g. via VirtualBox). See how to enable it at &lt;a href=&#34;https://blogs.technet.microsoft.com/canitpro/2015/09/08/step-by-step-enabling-hyper-v-for-use-on-windows-10/&#34;&gt;Step-By-Step: Enabling Hyper-V for use on Windows 10&lt;/a&gt;.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_docker_activate_hyper-v.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_docker_activate_hyper-v.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;p&gt;You can also check Hyper-V status on a detailed level via &lt;code&gt;Powershell&lt;/code&gt; using below (run as admin)&lt;/p&gt;
@@ -66,17 +66,17 @@
 &lt;pre&gt;&lt;code&gt;docker --version
 docker run hello-world&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_version.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_version.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_hello_world.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_hello_world.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;p&gt;Finally you can run a more demanding example by running a Linux Ubuntu Bash terminal (this may take some time depending on your bandwidth as the complete Ubuntu image is pulled). Note that you are made &lt;code&gt;root&lt;/code&gt; user in the shell.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;docker run -it ubuntu bash&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_run_it_ubuntu_bash.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_run_it_ubuntu_bash.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -85,7 +85,7 @@ docker run hello-world&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;As CMD, Powershell should work out of the box so we only show the hello-world example here again. Note that the image is not pulled again as we had just used it before in CMD.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;docker run hello-world&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_ps_docker_hello_world.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_ps_docker_hello_world.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -102,11 +102,11 @@ docker run hello-world&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;docker --version
 docker run hello-world&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_bash_docker_version.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_bash_docker_version.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://triamus.github.io/post/img/2017-10-07-install-docker-on-windows/windows_bash_docker_hello_world.PNG&#34; /&gt;
+&lt;img src=&#34;/post/img/2017-10-07-install-docker-on-windows/windows_bash_docker_hello_world.PNG&#34; /&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -116,10 +116,10 @@ docker run hello-world&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Install ApacheSpark on Windows</title>
-      <link>https://triamus.github.io/post/2017-09-22-install-spark-on-windows/</link>
+      <link>/post/2017-09-22-install-spark-on-windows/</link>
       <pubDate>Fri, 22 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/post/2017-09-22-install-spark-on-windows/</guid>
+      <guid>/post/2017-09-22-install-spark-on-windows/</guid>
       <description>
 
 &lt;ul&gt;
@@ -184,11 +184,11 @@ java -version
 python --version
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_system_and_version_info.PNG&#34; alt=&#34;CMD System Info&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_system_and_version_info.PNG&#34; alt=&#34;CMD System Info&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We can do the same for Bash (note the default version of Python)&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_system_and_version_info.PNG&#34; alt=&#34;Bash System Info&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_system_and_version_info.PNG&#34; alt=&#34;Bash System Info&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;install-scala&#34;&gt;Install Scala&lt;/h2&gt;
 
@@ -201,13 +201,13 @@ python --version
 
 &lt;p&gt;Your output should look like this&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_scala_check_after_install.PNG&#34; alt=&#34;CMD Scala Check&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_scala_check_after_install.PNG&#34; alt=&#34;CMD Scala Check&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;install-spark&#34;&gt;Install Spark&lt;/h2&gt;
 
 &lt;p&gt;Find the latest stable version of Spark on &lt;a href=&#34;http://spark.apache.org/downloads.html&#34; target=&#34;_blank&#34;&gt;Apache Spark Downloads&lt;/a&gt; and use pre-built on Hadoop and direct download.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/download_spark.PNG&#34; alt=&#34;Spark Download Page&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/download_spark.PNG&#34; alt=&#34;Spark Download Page&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Copy/save the .tgz file to/at the location where you like Spark to reside and extract it from some Linux shell (e.g. Bash, Cygwin) via below command (your file name may vary). Alternatively, you can use some extraction software such as 7zip.&lt;/p&gt;
 
@@ -215,11 +215,11 @@ python --version
 tar xzfv spark-2.2.0-bin-hadoop2.7.tgz
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_extract_spark_tgz.PNG&#34; alt=&#34;Bash extract Spark&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_extract_spark_tgz.PNG&#34; alt=&#34;Bash extract Spark&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;After some time, your Spark install (extraction) should be done and a couple of folders being created at your chosen location.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/spark_directory.png&#34; alt=&#34;Spark Directory&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/spark_directory.png&#34; alt=&#34;Spark Directory&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;setting-environment-variables&#34;&gt;Setting environment variables&lt;/h2&gt;
 
@@ -242,7 +242,7 @@ tar xzfv spark-2.2.0-bin-hadoop2.7.tgz
 
 &lt;p&gt;Your Windows environment variables may look something like this now&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/windows_environment_variables.PNG&#34; alt=&#34;Windows Environment Variables&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/windows_environment_variables.PNG&#34; alt=&#34;Windows Environment Variables&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;download-clone-windows-utilities-for-corresponding-hadoop-version&#34;&gt;Download/clone windows utilities for corresponding Hadoop version&lt;/h2&gt;
 
@@ -264,7 +264,7 @@ tar xzfv spark-2.2.0-bin-hadoop2.7.tgz
 
 &lt;p&gt;Your output should look something like below&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_spark-shell.PNG&#34; alt=&#34;CMD Initial Spark Shell&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_spark-shell.PNG&#34; alt=&#34;CMD Initial Spark Shell&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We execute a minimal example from &lt;a href=&#34;http://spark.apache.org/docs/latest/quick-start.html&#34; target=&#34;_blank&#34;&gt;Apache Spark Quick Start&lt;/a&gt; (note that the README file is located one directory up) to test basic functionality.&lt;/p&gt;
 
@@ -273,11 +273,11 @@ textFile.count() // Number of items in this Dataset
 textFile.first() // First item in this Dataset
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_scala_initial_test.PNG&#34; alt=&#34;CMD Scala Initial Test&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_scala_initial_test.PNG&#34; alt=&#34;CMD Scala Initial Test&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Since the Linux subsystem for Windows inherits the Path variables from Windows, we can run the same without further adjustments on Bash on Ubuntu on Windows&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_spark-shell.PNG&#34; alt=&#34;Bash Spark Shell&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_spark-shell.PNG&#34; alt=&#34;Bash Spark Shell&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;run-pyspark&#34;&gt;Run PySpark&lt;/h2&gt;
 
@@ -296,22 +296,22 @@ counts = text_file.flatMap(lambda line: line.split(&amp;quot; &amp;quot;)) \
 print(counts)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/cmd_pyspark_initial_test.PNG&#34; alt=&#34;CMD PySpark Initial Test&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/cmd_pyspark_initial_test.PNG&#34; alt=&#34;CMD PySpark Initial Test&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As before, the same command works in Bash but note the default Python version used&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_initial_test.PNG&#34; alt=&#34;Bash PySpark Initial Test&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_initial_test.PNG&#34; alt=&#34;Bash PySpark Initial Test&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In case you want to work with a different Python version, adjust respective Bash configuration file to export the environment variable (see line below). In our case, we use Python3.4 and define it in the &lt;code&gt;.profile&lt;/code&gt; file in the Bash home directory (&lt;code&gt;~&lt;/code&gt;).&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;export PYSPARK_PYTHON=python3.4
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_nano_profile.PNG&#34; alt=&#34;Bash nano profile&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_nano_profile.PNG&#34; alt=&#34;Bash nano profile&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The PySpark shell now runs Python 3.4 as default (this obviously needs to be adjusted in case you like to run a different Python version).&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_python3.PNG&#34; alt=&#34;bash_pyspark_python3&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/img/2017-09-22-install-spark-on-windows/bash_pyspark_python3.PNG&#34; alt=&#34;bash_pyspark_python3&#34; /&gt;&lt;/p&gt;
 </description>
     </item>
     
