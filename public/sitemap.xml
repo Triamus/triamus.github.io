@@ -4,7 +4,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/post/install-docker-on-windows/</loc>
+      <loc>/post/install-docker-on-windows/</loc>
       <lastmod>2017-10-07T00:00:00+00:00</lastmod>
     </url>
     
@@ -12,7 +12,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/post/2017-09-22-install-spark-on-windows/</loc>
+      <loc>/post/2017-09-22-install-spark-on-windows/</loc>
       <lastmod>2017-09-22T00:00:00+00:00</lastmod>
     </url>
     
@@ -20,7 +20,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/academic/</loc>
+      <loc>/tags/academic/</loc>
       <lastmod>2017-01-01T00:00:00+00:00</lastmod>
     </url>
     
@@ -28,7 +28,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/talk/example-talk/</loc>
+      <loc>/talk/example-talk/</loc>
       <lastmod>2017-01-01T00:00:00+00:00</lastmod>
     </url>
     
@@ -36,7 +36,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/post/</loc>
+      <loc>/post/</loc>
       <lastmod>2017-01-01T00:00:00+00:00</lastmod>
     </url>
     
@@ -44,7 +44,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/talk/</loc>
+      <loc>/talk/</loc>
       <lastmod>2017-01-01T00:00:00+00:00</lastmod>
     </url>
     
@@ -52,7 +52,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/post/2016-12-30-hello-markdown/</loc>
+      <loc>/post/2016-12-30-hello-markdown/</loc>
       <lastmod>2016-12-30T21:49:57-07:00</lastmod>
     </url>
     
@@ -60,7 +60,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/about/</loc>
+      <loc>/about/</loc>
       <lastmod>2016-05-05T21:48:51-07:00</lastmod>
     </url>
     
@@ -68,7 +68,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/post/getting-started/</loc>
+      <loc>/post/getting-started/</loc>
       <lastmod>2016-04-20T12:00:00+00:00</lastmod>
     </url>
     
@@ -76,7 +76,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/post/widgets/</loc>
+      <loc>/post/widgets/</loc>
       <lastmod>2016-04-20T11:00:00+00:00</lastmod>
     </url>
     
@@ -84,7 +84,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/post/managing-content/</loc>
+      <loc>/post/managing-content/</loc>
       <lastmod>2016-04-20T11:00:00+00:00</lastmod>
     </url>
     
@@ -92,7 +92,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/post/writing-markdown-latex/</loc>
+      <loc>/post/writing-markdown-latex/</loc>
       <lastmod>2016-04-20T10:00:00+00:00</lastmod>
     </url>
     
@@ -100,7 +100,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/post/2015-07-23-r-rmarkdown/</loc>
+      <loc>/post/2015-07-23-r-rmarkdown/</loc>
       <lastmod>2015-07-23T21:13:14-05:00</lastmod>
     </url>
     
@@ -108,7 +108,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/post/migrate-from-jekyll/</loc>
+      <loc>/post/migrate-from-jekyll/</loc>
       <lastmod>2014-03-10T00:00:00+00:00</lastmod>
     </url>
     
@@ -116,7 +116,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/bash-on-windows/</loc>
+      <loc>/tags/bash-on-windows/</loc>
       <lastmod>2017-10-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -125,7 +125,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/categories/</loc>
+      <loc>/categories/</loc>
       <priority>0</priority>
     </url>
     
@@ -133,7 +133,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/cmd/</loc>
+      <loc>/tags/cmd/</loc>
       <lastmod>2017-10-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -142,7 +142,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/docker/</loc>
+      <loc>/tags/docker/</loc>
       <lastmod>2017-10-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -151,7 +151,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/hadoop/</loc>
+      <loc>/tags/hadoop/</loc>
       <lastmod>2017-09-22T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -160,7 +160,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/hugo/</loc>
+      <loc>/tags/hugo/</loc>
       <lastmod>2016-04-20T12:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -169,7 +169,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/categories/infrastructure/</loc>
+      <loc>/categories/infrastructure/</loc>
       <lastmod>2017-10-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -178,7 +178,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/jekyll/</loc>
+      <loc>/tags/jekyll/</loc>
       <lastmod>2014-03-10T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -187,7 +187,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/plot/</loc>
+      <loc>/tags/plot/</loc>
       <lastmod>2015-07-23T21:13:14-05:00</lastmod>
       <priority>0</priority>
     </url>
@@ -196,7 +196,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/publication_types/</loc>
+      <loc>/publication_types/</loc>
       <priority>0</priority>
     </url>
     
@@ -204,7 +204,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/pyspark/</loc>
+      <loc>/tags/pyspark/</loc>
       <lastmod>2017-09-22T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -213,7 +213,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/categories/r/</loc>
+      <loc>/categories/r/</loc>
       <lastmod>2015-07-23T21:13:14-05:00</lastmod>
       <priority>0</priority>
     </url>
@@ -222,7 +222,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/r-markdown/</loc>
+      <loc>/tags/r-markdown/</loc>
       <lastmod>2015-07-23T21:13:14-05:00</lastmod>
       <priority>0</priority>
     </url>
@@ -231,7 +231,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/regression/</loc>
+      <loc>/tags/regression/</loc>
       <lastmod>2015-07-23T21:13:14-05:00</lastmod>
       <priority>0</priority>
     </url>
@@ -240,7 +240,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/spark/</loc>
+      <loc>/tags/spark/</loc>
       <lastmod>2017-09-22T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -249,7 +249,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/</loc>
+      <loc>/tags/</loc>
       <lastmod>2017-01-01T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -258,7 +258,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/tags/windows/</loc>
+      <loc>/tags/windows/</loc>
       <lastmod>2017-09-22T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -267,7 +267,7 @@
     
     
     <url>
-      <loc>https://triamus.github.io/</loc>
+      <loc>/</loc>
       <lastmod>2016-04-20T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>

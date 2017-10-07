@@ -189,7 +189,7 @@ pyspark
 # we show it with bin/pyspark but both will work if your environment variables are properly set
 ```
 
-Again, we execute a minimal example from [Apache Spark Examples](we execute a minimal example from https://spark.apache.org/examples.html).
+Again, we execute a minimal example from [Apache Spark Examples](https://spark.apache.org/examples.html).
 
 ```python
 text_file = sc.textFile("README.md")
