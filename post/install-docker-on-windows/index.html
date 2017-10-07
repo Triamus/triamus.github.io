@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.27.1" />
+  <meta name="author" content="Alexander Wagner">
+  <meta name="description" content="Data Enthusiast">
+
+  
+  
+  
+    
+  
+  
+    
+    
+    <link rel="stylesheet" href="/css/highlight.min.css">
+    
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/academicons.min.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:400,700|Merriweather|Roboto+Mono">
+  <link rel="stylesheet" href="/css/hugo-academic.css">
+  
+
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="suspiciously datalicious">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="suspiciously datalicious">
+
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/apple-touch-icon.png">
+
+  <link rel="canonical" href="/post/install-docker-on-windows/">
+
+  
+
+  <title>Install Docker on Windows | suspiciously datalicious</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#navbar-main" data-offset="71">
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">suspiciously datalicious</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+          </a>
+        </li>
+
+        
+        
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+  <div class="article-container">
+    <h1 itemprop="name">Install Docker on Windows</h1>
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    <time datetime="2017-10-07 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+      Sat, Oct 7, 2017
+    </time>
+  </span>
+
+  
+  
+  
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/infrastructure">Infrastructure</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+  
+  <span class="article-tags">
+    <i class="fa fa-tags"></i>
+    
+    <a href="/tags/bash-on-windows">Bash on Windows</a
+    >, 
+    
+    <a href="/tags/cmd">CMD</a
+    >, 
+    
+    <a href="/tags/docker">docker</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2finstall-docker-on-windows%2f"
+         target="_blank">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Install%20Docker%20on%20Windows&amp;url=%2fpost%2finstall-docker-on-windows%2f"
+         target="_blank">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2finstall-docker-on-windows%2f&amp;title=Install%20Docker%20on%20Windows"
+         target="_blank">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2finstall-docker-on-windows%2f&amp;title=Install%20Docker%20on%20Windows"
+         target="_blank">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Install%20Docker%20on%20Windows&amp;body=%2fpost%2finstall-docker-on-windows%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    <div class="article-style" itemprop="articleBody">
+      <div id="TOC">
+<ul>
+<li><a href="#overview"><span class="toc-section-number">1</span> Overview</a></li>
+<li><a href="#system-requirements"><span class="toc-section-number">2</span> System requirements</a></li>
+<li><a href="#install-docker"><span class="toc-section-number">3</span> Install Docker</a></li>
+<li><a href="#run-docker"><span class="toc-section-number">4</span> Run Docker</a><ul>
+<li><a href="#cmd"><span class="toc-section-number">4.1</span> CMD</a></li>
+<li><a href="#powershell"><span class="toc-section-number">4.2</span> Powershell</a></li>
+<li><a href="#bash-on-windows"><span class="toc-section-number">4.3</span> Bash on Windows</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="overview" class="section level1">
+<h1><span class="header-section-number">1</span> Overview</h1>
+<p>This is a quick tutorial how to install Docker on Windows and use it via CMD or Bash on Windows (Linux subsystem for Windows - WSL). It is assumed that the reader has basic knowledge of the Windows command line (CMD) and, if Bash should be used, a basic familiarity with Bash on Ubuntu on Windows. We will demonstrate a basic example to run a docker image.</p>
+</div>
+<div id="system-requirements" class="section level1">
+<h1><span class="header-section-number">2</span> System requirements</h1>
+<p>For detailed system requirements, see <a href="https://docs.docker.com/docker-for-windows/install/#what-to-know-before-you-install">What to know before you install</a> but main requirements are</p>
+<ul>
+<li>Hyper-V running/enabled (note that this means that VirtualBox VM images won’t run anymore and there may be other implications for high-precision applications, see details at <a href="https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/about/">Introduction to Hyper-V on Windows 10</a>)</li>
+<li>64bit Windows 10 Pro/Education/Enterprise (there are people claiming Docker runs on Windows 10 Home but we found this not to be true when trying ourselves as Hyper-V seems only available for Pro, Education and Enterprise versions - 1511 November update, Build 10586 or later), see also official Microsoft page on Hyper-V system requirements at <a href="https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v">Install Hyper-V on Windows 10</a>. Windows &gt;= 8 may work as well but we haven’t tested it.</li>
+<li>Virtualization must be enabled</li>
+</ul>
+</div>
+<div id="install-docker" class="section level1">
+<h1><span class="header-section-number">3</span> Install Docker</h1>
+<p>The installation is best performed by using officially provided binary installer from <a href="https://docs.docker.com/docker-for-windows/install/">Docker webpage</a>. We recommend the stable version unless you need latest changes from development version. Once the installation is through (and PC restarted) Docker should be automatically running indicated by its icon showing in the task bar.</p>
+<div class="figure">
+<img src="/post/img/2017-10-07-install-docker-on-windows/windows_docker_is_running.png" />
+
+</div>
+<p>In case it is not running for you, one reason might be that the automatic enabling of Hyper-V during the Docker installation did not work. Check the official Microsoft page on Hyper-V at <a href="https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v">Install Hyper-V on Windows 10</a> to see a couple of ways to enable it. Also note that Hyper-V activation and virtualization activation are not the same thing so make sure virtualization is enabled in BIOS, too (usually the case if you used virtual machines before, e.g. via VirtualBox). See how to enable it at <a href="https://blogs.technet.microsoft.com/canitpro/2015/09/08/step-by-step-enabling-hyper-v-for-use-on-windows-10/">Step-By-Step: Enabling Hyper-V for use on Windows 10</a>.</p>
+<div class="figure">
+<img src="/post/img/2017-10-07-install-docker-on-windows/windows_docker_activate_hyper-v.PNG" />
+
+</div>
+<p>You can also check Hyper-V status on a detailed level via <code>Powershell</code> using below (run as admin)</p>
+<pre><code>Get-WindowsOptionalFeature -Online -FeatureName *hyper*</code></pre>
+</div>
+<div id="run-docker" class="section level1">
+<h1><span class="header-section-number">4</span> Run Docker</h1>
+<p>Docker can be run in a few ways, we show it via CMD, Powershell and Bash on Windows. In general, CMD and Powershell usage should be fairly similar but you may require some additional wrangling for Bash. If you used the official Windows binary installer from the Docker webpage, the relevant path/environment variables should already be set and you can start using it right away. As opposed to running Docker on Linux, Windows should not require running the terminal as admin.</p>
+<div id="cmd" class="section level2">
+<h2><span class="header-section-number">4.1</span> CMD</h2>
+<p>Check if Docker works by testing below examples. Note that you require an internet connection in case you have never used below Docker images before (e.g. hello-world) as Docker will automatically download/pull those.</p>
+<pre><code>docker --version
+docker run hello-world</code></pre>
+<div class="figure">
+<img src="/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_version.PNG" />
+
+</div>
+<div class="figure">
+<img src="/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_hello_world.PNG" />
+
+</div>
+<p>Finally you can run a more demanding example by running a Linux Ubuntu Bash terminal (this may take some time depending on your bandwidth as the complete Ubuntu image is pulled). Note that you are made <code>root</code> user in the shell.</p>
+<pre><code>docker run -it ubuntu bash</code></pre>
+<div class="figure">
+<img src="/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_run_it_ubuntu_bash.PNG" />
+
+</div>
+</div>
+<div id="powershell" class="section level2">
+<h2><span class="header-section-number">4.2</span> Powershell</h2>
+<p>As CMD, Powershell should work out of the box so we only show the hello-world example here again. Note that the image is not pulled again as we had just used it before in CMD.</p>
+<pre><code>docker run hello-world</code></pre>
+<div class="figure">
+<img src="/post/img/2017-10-07-install-docker-on-windows/windows_ps_docker_hello_world.PNG" />
+
+</div>
+</div>
+<div id="bash-on-windows" class="section level2">
+<h2><span class="header-section-number">4.3</span> Bash on Windows</h2>
+<p>In general, Bash on Windows should inherit the <code>PATH</code> from Windows environment variables and thus work out of the box as well but there are a couple of things to note (<strong>note</strong> special care when working with WSL config files as outlined in subsection <a href="https://triamus.github.io/post/install-spark-on-windows/#A%20general%20note%20of%20caution%20for%20Bash%20on%20Windows">A general note of caution for Bash on Windows</a>).</p>
+<ul>
+<li>Windows binary installer sets <code>PATH</code> variable as <code>C:\Program Files\Docker\Docker\Resources\bin</code> although it should actually be <code>C:\Program Files\Docker\Docker\resources\bin</code>, i.e. lower case <code>r</code> in <code>resources</code>. This should generally not be an issue in case-insensitive Windows but may lead to issues in Linux (WSL) although we haven’t encountered any. Still you may want to adjust it.</li>
+<li>We found that you get the error <code>Unable to translate current working directory. Using C:\WINDOWS\system32</code> when running Docker in WSL in some directories, e.g. home (~), but not when running it in others, e.g. in <code>/mnt/c/Program\ Files/Docker/Docker/resources/bin</code>. This is apparently expected as some directories have no Windows equivalent, see this <a href="https://github.com/Microsoft/BashOnWindows/issues/2011">Github issue</a>.</li>
+<li>Docker on Windows comes as binary, i.e. <code>docker.exe</code>. To avoid extra typing and confusion you probably want to set an alias e.g. in your <code>.bashrc</code> file as so <code>alias docker=&quot;docker.exe&quot;</code>.</li>
+</ul>
+<p>In case you find Docker not working with an error message like <code>The program &quot;docker&quot; is currently not installed. You can install it by typing: sudo apt-get install docker</code> it is probably caused by not having set the alias correctly or because Windows does not find Docker in the <code>PATH</code>. You can try pointing Windows to the Docker install by including it in the <code>PATH</code> via .bashrc as so <code>PATH=&quot;$PATH:/mnt/c/Program\ Files/Docker/Docker/resources/bin&quot;</code>.</p>
+<p>Finally, we run the same examples as with CMD (we spare you running an Ubuntu image from an Ubuntu system as WSL although it would be possible of course).</p>
+<pre><code>docker --version
+docker run hello-world</code></pre>
+<div class="figure">
+<img src="/post/img/2017-10-07-install-docker-on-windows/windows_bash_docker_version.PNG" />
+
+</div>
+<div class="figure">
+<img src="/post/img/2017-10-07-install-docker-on-windows/windows_bash_docker_hello_world.PNG" />
+
+</div>
+</div>
+</div>
+
+    </div>
+  </div>
+
+</article>
+
+<div class="container">
+  <nav>
+  <ul class="pager">
+    
+    <li class="previous"><a href="/post/2017-09-22-install-spark-on-windows/"><span
+      aria-hidden="true">&larr;</span> Install ApacheSpark on Windows</a></li>
+    
+
+    
+  </ul>
+</nav>
+
+</div>
+
+<div class="article-container">
+  
+<section id="comments">
+  <div id="disqus_thread">
+    <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "triamus-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+  </div>
+</section>
+
+
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2017 Alexander Wagner &middot; 
+
+      Powered by the <a href="https://github.com/gcushen/hugo-academic" target="_blank">Academic
+      theme</a> for <a href="http://gohugo.io" target="_blank">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.4/TweenMax.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/ScrollToPlugin.min.js"></script>
+    <script src="/js/jquery-1.12.3.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/isotope.pkgd.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.1/imagesloaded.pkgd.min.js"></script>
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-104080060-1', 'auto');
+        ga('send', 'pageview');
+
+         
+        var links = document.querySelectorAll('a');
+        Array.prototype.map.call(links, function(item) {
+            if (item.host != document.location.host) {
+                item.addEventListener('click', function() {
+                    var action = item.getAttribute('data-action') || 'follow';
+                    ga('send', 'event', 'outbound', action, item.href);
+                });
+            }
+        });
+    </script>
+    
+
+    
+    
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+

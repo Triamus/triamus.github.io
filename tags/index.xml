@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on suspiciously datalicious</title>
-    <link>https://triamus.github.io/tags/</link>
+    <link>/tags/</link>
     <description>Recent content in Tags on suspiciously datalicious</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -12,119 +12,119 @@
     
     <item>
       <title>Content tagged as &#39;Academic&#39;</title>
-      <link>https://triamus.github.io/tags/academic/</link>
+      <link>/tags/academic/</link>
       <pubDate>Sun, 01 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/tags/academic/</guid>
+      <guid>/tags/academic/</guid>
       <description>&lt;p&gt;Here is a list of all the content that has been tagged as &lt;em&gt;academic&lt;/em&gt;.&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>Bash on Windows</title>
-      <link>https://triamus.github.io/tags/bash-on-windows/</link>
-      <pubDate>Fri, 22 Sep 2017 00:00:00 +0000</pubDate>
+      <link>/tags/bash-on-windows/</link>
+      <pubDate>Sat, 07 Oct 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/tags/bash-on-windows/</guid>
+      <guid>/tags/bash-on-windows/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Deep Learning</title>
-      <link>https://triamus.github.io/tags/deep-learning/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
+      <title>Cmd</title>
+      <link>/tags/cmd/</link>
+      <pubDate>Sat, 07 Oct 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/tags/deep-learning/</guid>
+      <guid>/tags/cmd/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Demo</title>
-      <link>https://triamus.github.io/tags/demo/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
+      <title>Docker</title>
+      <link>/tags/docker/</link>
+      <pubDate>Sat, 07 Oct 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/tags/demo/</guid>
+      <guid>/tags/docker/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Hadoop</title>
-      <link>https://triamus.github.io/tags/hadoop/</link>
+      <link>/tags/hadoop/</link>
       <pubDate>Fri, 22 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/tags/hadoop/</guid>
+      <guid>/tags/hadoop/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Hugo</title>
-      <link>https://triamus.github.io/tags/hugo/</link>
+      <link>/tags/hugo/</link>
       <pubDate>Wed, 20 Apr 2016 12:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/tags/hugo/</guid>
+      <guid>/tags/hugo/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Jekyll</title>
-      <link>https://triamus.github.io/tags/jekyll/</link>
+      <link>/tags/jekyll/</link>
       <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/tags/jekyll/</guid>
+      <guid>/tags/jekyll/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Plot</title>
-      <link>https://triamus.github.io/tags/plot/</link>
+      <link>/tags/plot/</link>
       <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
       
-      <guid>https://triamus.github.io/tags/plot/</guid>
+      <guid>/tags/plot/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Pyspark</title>
-      <link>https://triamus.github.io/tags/pyspark/</link>
+      <link>/tags/pyspark/</link>
       <pubDate>Fri, 22 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/tags/pyspark/</guid>
+      <guid>/tags/pyspark/</guid>
       <description></description>
     </item>
     
     <item>
       <title>R Markdown</title>
-      <link>https://triamus.github.io/tags/r-markdown/</link>
+      <link>/tags/r-markdown/</link>
       <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
       
-      <guid>https://triamus.github.io/tags/r-markdown/</guid>
+      <guid>/tags/r-markdown/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Regression</title>
-      <link>https://triamus.github.io/tags/regression/</link>
+      <link>/tags/regression/</link>
       <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
       
-      <guid>https://triamus.github.io/tags/regression/</guid>
+      <guid>/tags/regression/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Spark</title>
-      <link>https://triamus.github.io/tags/spark/</link>
+      <link>/tags/spark/</link>
       <pubDate>Fri, 22 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/tags/spark/</guid>
+      <guid>/tags/spark/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Windows</title>
-      <link>https://triamus.github.io/tags/windows/</link>
+      <link>/tags/windows/</link>
       <pubDate>Fri, 22 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://triamus.github.io/tags/windows/</guid>
+      <guid>/tags/windows/</guid>
       <description></description>
     </item>
     
