@@ -1,0 +1,104 @@
+---
+title: Install Docker on Windows
+author: Alexander Wagner
+date: '2017-10-07'
+slug: install-docker-on-windows
+categories:
+  - Infrastructure
+tags:
+  - Bash on Windows
+  - CMD
+  - docker
+summary: Install Docker on Windows and use via CMD or Bash on Windows (Linux subsystem for Windows - WSL)
+image_preview: 'docker_logo.png'
+output:
+  blogdown::html_page:
+    toc: true
+    number_sections: true
+    toc_depth: 3
+---
+
+# Overview
+
+This is a quick tutorial how to install Docker on Windows and use it via CMD or Bash on Windows (Linux subsystem for Windows - WSL). It is assumed that the reader has basic knowledge of the Windows command line (CMD) and, if Bash should be used, a basic familiarity with Bash on Ubuntu on Windows. We will demonstrate a basic example to run a docker image.
+
+# System requirements
+
+For detailed system requirements, see [What to know before you install](https://docs.docker.com/docker-for-windows/install/#what-to-know-before-you-install) but main requirements are
+
+* Hyper-V running/enabled (note that this means that VirtualBox VM images won't run anymore and there may be other implications for high-precision applications, see details at [Introduction to Hyper-V on Windows 10](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/about/))
+* 64bit Windows 10 Pro/Education/Enterprise (there are people claiming Docker runs on Windows 10 Home but we found this not to be true when trying ourselves as Hyper-V seems only available for Pro, Education and Enterprise versions - 1511 November update, Build 10586 or later), see also official Microsoft page on Hyper-V system requirements at [Install Hyper-V on Windows 10](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v). Windows >= 8 may work as well but we haven't tested it.
+* Virtualization must be enabled
+
+# Install Docker
+
+The installation is best performed by using officially provided binary installer from [Docker webpage](https://docs.docker.com/docker-for-windows/install/). We recommend the stable version unless you need latest changes from development version. Once the installation is through (and PC restarted) Docker should be automatically running indicated by its icon showing in the task bar.
+
+![](/post/img/2017-10-07-install-docker-on-windows/windows_docker_is_running.png)
+
+In case it is not running for you, one reason might be that the automatic enabling of Hyper-V during the Docker installation did not work. Check the official Microsoft page on Hyper-V at [Install Hyper-V on Windows 10](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v) to see a couple of ways to enable it. Also note that Hyper-V activation and virtualization activation are not the same thing so make sure virtualization is enabled in BIOS, too (usually the case if you used virtual machines before, e.g. via VirtualBox). See how to enable it at [Step-By-Step: Enabling Hyper-V for use on Windows 10](https://blogs.technet.microsoft.com/canitpro/2015/09/08/step-by-step-enabling-hyper-v-for-use-on-windows-10/).
+
+![](/post/img/2017-10-07-install-docker-on-windows/windows_docker_activate_hyper-v.PNG)
+
+You can also check Hyper-V status on a detailed level via `Powershell` using below (run as admin)
+
+```
+Get-WindowsOptionalFeature -Online -FeatureName *hyper*
+```
+
+# Run Docker
+
+Docker can be run in a few ways, we show it via CMD, Powershell and Bash on Windows. In general, CMD and Powershell usage should be fairly similar but you may require some additional wrangling for Bash. If you used the official Windows binary installer from the Docker webpage, the relevant path/environment variables should already be set and you can start using it right away. As opposed to running Docker on Linux, Windows should not require running the terminal as admin.
+
+## CMD
+
+Check if Docker works by testing below examples. Note that you require an internet connection in case you have never used below Docker images before (e.g. hello-world) as Docker will automatically download/pull those.
+
+```
+docker --version
+docker run hello-world
+```
+
+![](/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_version.PNG)
+
+![](/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_hello_world.PNG)
+
+Finally you can run a more demanding example by running a Linux Ubuntu Bash terminal (this may take some time depending on your bandwidth as the complete Ubuntu image is pulled). Note that you are made `root` user in the shell.
+
+```
+docker run -it ubuntu bash
+```
+
+![](/post/img/2017-10-07-install-docker-on-windows/windows_cmd_docker_run_it_ubuntu_bash.PNG)
+
+## Powershell
+
+As CMD, Powershell should work out of the box so we only show the hello-world example here again. Note that the image is not pulled again as we had just used it before in CMD.
+
+```
+docker run hello-world
+```
+
+![](/post/img/2017-10-07-install-docker-on-windows/windows_ps_docker_hello_world.PNG)
+
+## Bash on Windows
+
+In general, Bash on Windows should inherit the `PATH` from Windows environment variables and thus work out of the box as well but there are a couple of things to note (**note** special care when working with WSL config files as outlined in subsection [A general note of caution for Bash on Windows](https://triamus.github.io/post/install-spark-on-windows/#A general note of caution for Bash on Windows)).
+
+* Windows binary installer sets `PATH` variable as `C:\Program Files\Docker\Docker\Resources\bin` although it should actually be `C:\Program Files\Docker\Docker\resources\bin`, i.e. lower case `r` in `resources`. This should generally not be an issue in case-insensitive Windows but may lead to issues in Linux (WSL) although we haven't encountered any. Still you may want to adjust it.
+* We found that you get the error `Unable to translate current working directory. Using C:\WINDOWS\system32` when running Docker in WSL in some directories, e.g. home (~), but not when running it in others, e.g. in `/mnt/c/Program\ Files/Docker/Docker/resources/bin`. This is apparently expected as some directories have no Windows equivalent, see this [Github issue](https://github.com/Microsoft/BashOnWindows/issues/2011).
+* Docker on Windows comes as binary, i.e. `docker.exe`. To avoid extra typing and confusion you probably want to set an alias e.g. in your `.bashrc` file as so `alias docker="docker.exe"`.
+
+In case you find Docker not working with an error message like `The program "docker" is currently not installed. You can install it by typing:
+sudo apt-get install docker` it is probably caused by not having set the alias correctly or because Windows does not find Docker in the `PATH`. You can try pointing Windows to the Docker install by including it in the `PATH` via .bashrc as so `PATH="$PATH:/mnt/c/Program\ Files/Docker/Docker/resources/bin"`. 
+
+Finally, we run the same examples as with CMD (we spare you running an Ubuntu image from an Ubuntu system as WSL although it would be possible of course).
+
+```
+docker --version
+docker run hello-world
+```
+
+![](/post/img/2017-10-07-install-docker-on-windows/windows_bash_docker_version.PNG)
+
+![](/post/img/2017-10-07-install-docker-on-windows/windows_bash_docker_hello_world.PNG)

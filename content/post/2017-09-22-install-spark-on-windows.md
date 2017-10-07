@@ -1,30 +1,42 @@
----
-title: Install ApacheSpark on Windows
-author: Alexander Wagner
-date: '2017-09-22'
-slug: install-spark-on-windows
-categories:
-  - Infrastructure
-tags:
-  - Spark
-  - Hadoop
-  - Windows
-  - Bash on Windows
-  - PySpark
----
++++
+# Date this page was created.
+date = "2017-09-22"
 
-* [Overview](#Overview)
-* [System requirements](#System requirements)
-    + [A general note of caution for Bash on Windows](#A general note of caution for Bash on Windows)
-    + [Install Java](#Install Java)
-    + [Install Python](#Install Python)
-    + [Example output for system](#Example output for system)
-* [Install Scala](#Install Scala)
-* [Setting environment variables](#Setting environment variables)
-* [Download/clone windows utilities for corresponding Hadoop version](#Download/clone windows utilities for corresponding Hadoop version)
-* [Make /tmp/hive writable](#Make /tmp/hive writable)
-* [Run Spark shell](#Run Spark shell)
-* [Run PySpark](#Run PySpark)
+# Project title.
+title = "Install ApacheSpark on Windows"
+
+authors = ["Alexander Wagner"]
+
+# Project summary to display on homepage.
+summary = "This is a quick tutorial how to install ApacheSpark on Windows via the pre-built on Apache Hadoop."
+
+# Optional image to display on homepage (relative to `static/img/` folder).
+image_preview = "spark_welcome.PNG"
+
+# Tags: can be used for filtering projects.
+# Example: `tags = ["machine-learning", "deep-learning"]`
+categories = ["Infrastructure"]
+tags = ["Spark", "Hadoop", "Windows", "Bash on Windows", "PySpark"]
+
+# Does the project detail page use math formatting?
+math = false
+
+#[header]
+#image = "headers/spark_welcome.PNG"
++++
+
+* [Overview](#overview)
+* [System requirements](#system-requirements)
+    + [A general note of caution for Bash on Windows](#a-general-note-of caution-for-bash-on-windows)
+    + [Install Java](#install-java)
+    + [Install Python](#install-python)
+    + [Example output for system](#example-output-for-system)
+* [Install Scala](#install-scala)
+* [Setting environment variables](#setting-environment-variables)
+* [Download/clone windows utilities for corresponding Hadoop version](#download/clone-windows-utilities-for-corresponding-hadoop-version)
+* [Make /tmp/hive writable](#make-/tmp/hive-writable)
+* [Run Spark shell](#run-spark-shell)
+* [Run PySpark](#run-pyspark)
 
 ## Overview
 
