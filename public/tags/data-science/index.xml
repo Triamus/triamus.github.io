@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Data Science on suspiciously datalicious</title>
-    <link>/tags/data-science/</link>
+    <link>https://triamus.github.io/tags/data-science/</link>
     <description>Recent content in Data Science on suspiciously datalicious</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -12,10 +12,10 @@
     
     <item>
       <title>Lending Club Loan Data in R</title>
-      <link>/project/lending-club-loan-data-in-r/</link>
+      <link>https://triamus.github.io/project/lending-club-loan-data-in-r/</link>
       <pubDate>Mon, 23 Oct 2017 00:00:00 +0000</pubDate>
       
-      <guid>/project/lending-club-loan-data-in-r/</guid>
+      <guid>https://triamus.github.io/project/lending-club-loan-data-in-r/</guid>
       <description>&lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#overview&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Overview&lt;/a&gt;&lt;ul&gt;
@@ -2679,7 +2679,7 @@ loan_amount_vars &amp;lt;- c(&amp;quot;loan_amnt&amp;quot;, &amp;quot;funded_amn
   geom_histogram()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 4 rows containing non-finite values (stat_bin).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-29-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-29-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can see that a lot of loans have corresponding annual income of zero and in general income seems low. As already known, joint income has a large number of NA values (i.e. cannot be displayed) and those few values that are present do not seem to have significant exposure. Most loan applications must have been submitted by single income borrowers, i.e. either single persons or single-income households.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;train %&amp;gt;%
   select_(.dots = loan_amount_vars) %&amp;gt;%
@@ -2688,7 +2688,7 @@ loan_amount_vars &amp;lt;- c(&amp;quot;loan_amnt&amp;quot;, &amp;quot;funded_amn
   facet_wrap(~ variable, scales = &amp;quot;free_x&amp;quot;, ncol = 3) +
   geom_histogram()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-30-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-30-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The loan amount distributions seems similar in shape suggesting not too much divergence between the loan amount applied for, the amount committed and the amount invested.&lt;/p&gt;
 &lt;p&gt;We had already identified a number of interesting categorical variables. Let’s combine our selection with the meta information gathered in an earlier stage to see the information power and uniqueness.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;categorical_vars &amp;lt;- 
@@ -2822,7 +2822,7 @@ give_mean &amp;lt;-
   scale_y_continuous(labels = comma) +
   facet_wrap(~ default) +
   labs(title=&amp;quot;Loan Amount by Grade&amp;quot;, x = &amp;quot;Grade&amp;quot;, y = &amp;quot;Loan Amount \n&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-33-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-33-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can derive a few points from the plot:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;there is not a lot of difference between default and non-default&lt;/li&gt;
@@ -2840,7 +2840,7 @@ give_mean &amp;lt;-
   scale_y_continuous(labels = comma) +
   labs(title=&amp;quot;Interest Rate by Grade&amp;quot;, x = &amp;quot;Grade&amp;quot;, y = &amp;quot;Interest Rate \n&amp;quot;) +
   facet_wrap(~ term)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-34-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-34-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can derive a few points from the plot:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;interest rate increases with grade worsening&lt;/li&gt;
@@ -2862,7 +2862,7 @@ give_mean &amp;lt;-
   scale_y_continuous(labels = comma) +
   facet_wrap(~ default) +
   labs(title=&amp;quot;Interest Rate by Home Ownership&amp;quot;, x = &amp;quot;Home Ownership&amp;quot;, y = &amp;quot;Interest Rate \n&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-35-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-35-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can derive a few points from the plot:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;there seems no immediate conclusion with respect to the impact of home ownership, e.g. we can see that median/mean interest rate is higher for people who own a house than for those who still pay a mortgage.&lt;/li&gt;
@@ -2903,7 +2903,7 @@ ls()&lt;/code&gt;&lt;/pre&gt;
   ggplot(aes(x = loan_amnt, y = value)) +
   facet_wrap(~ variable, scales = &amp;quot;free_x&amp;quot;, ncol = 3) +
   geom_point()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-37-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-37-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can derive a few points from the plot:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;there are instances when funded amount is smaller loan amount&lt;/li&gt;
@@ -2914,7 +2914,7 @@ ls()&lt;/code&gt;&lt;/pre&gt;
   ggplot(aes(x = annual_inc, y = loan_amnt)) +
   geom_point()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 4 rows containing missing values (geom_point).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-38-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-38-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can derive a few points from the plot:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;there is no immediatly discernible relationship&lt;/li&gt;
@@ -2993,7 +2993,7 @@ ls()&lt;/code&gt;&lt;/pre&gt;
   ggplot(aes(issue_d, int_rate_mean)) +
   geom_line(color= &amp;quot;darkblue&amp;quot;, size = 1) +
   facet_wrap(~ grade)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-40-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-40-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can derive a few points from the plot:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;the mean interest rate is falling or relatively constant for high-rated clients&lt;/li&gt;
@@ -3007,7 +3007,7 @@ ls()&lt;/code&gt;&lt;/pre&gt;
   ggplot(aes(issue_d, loan_amnt_mean)) +
   geom_line(color= &amp;quot;darkblue&amp;quot;, size = 1) +
   facet_wrap(~ grade)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-41-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-41-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can derive a few points from the plot:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;the mean loan amount is increasing for all grades&lt;/li&gt;
@@ -3366,7 +3366,7 @@ dplyr::setdiff(default_rate_state$addr_state, states$usps_code)&lt;/code&gt;&lt;
 &lt;p&gt;Finally, we can plot the data using the default colors from &lt;code&gt;choroplethr&lt;/code&gt;. As we are having data on state level, we use function &lt;code&gt;choroplethr::state_choropleth()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;choroplethr::state_choropleth(df = default_rate_state, 
                               title = &amp;quot;Default rate by State&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-47-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-47-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can derive a few points from the plot:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;default rate varies across states&lt;/li&gt;
@@ -3597,7 +3597,7 @@ meta_train %&amp;gt;%
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(corrplot)
 corrplot::corrplot(cor(train[, num_vars], use = &amp;quot;complete.obs&amp;quot;), 
                    method = &amp;quot;pie&amp;quot;, type = &amp;quot;upper&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-49-1.png&#34; width=&#34;1344&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-49-1.png&#34; width=&#34;1344&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can derive a few things from the plot&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;overall correlation between variables seems low but there are a few highly correlated ones&lt;/li&gt;
@@ -3638,7 +3638,7 @@ plot_ggpairs &amp;lt;-
   ggpairs()
 
 plot_ggpairs&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-52-1.png&#34; width=&#34;1344&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-52-1.png&#34; width=&#34;1344&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The resulting graph has a lot of information in it and we won’t go into further detail here but the most important points to read the graph properly. In the columns:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;for single continuous numeric variable plots density estimate&lt;/li&gt;
@@ -3672,7 +3672,7 @@ train %&amp;gt;%
   scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;) +
   scale_color_brewer(palette = &amp;quot;Set1&amp;quot;) +
   facet_wrap( ~ measure, scales = &amp;quot;free&amp;quot;, ncol = 3)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-53-1.png&#34; width=&#34;1344&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-53-1.png&#34; width=&#34;1344&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can derive a few things from the plot:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;most of the densities are right-skewed with probably a few outliers extending the x-axis which makes discerning patterns in the area with highest mass difficult&lt;/li&gt;
@@ -3708,7 +3708,7 @@ train %&amp;gt;%
   scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;) +
   scale_color_brewer(palette = &amp;quot;Set1&amp;quot;) +
   facet_wrap( ~ measure, scales = &amp;quot;free&amp;quot;, ncol = 3)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-54-1.png&#34; width=&#34;1344&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-54-1.png&#34; width=&#34;1344&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can derive a few things from the plot:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;most densities don’t show a discernible difference between default and non-default&lt;/li&gt;
@@ -4125,7 +4125,7 @@ caret::confusionMatrix(data = model_pred_t(model_glm_1_pred, 0.5),
 plot_pred_type_distribution(
   df = tibble::tibble(pred = model_glm_1_pred, actual = test$default), 
   threshold = 0.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-63-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-63-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can derive a few things from the plot:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;We can clearly see the imbalance of the test dataset with many more observations being &lt;code&gt;FALSE&lt;/code&gt;, i.e. non-defaulted&lt;/li&gt;
@@ -4169,7 +4169,7 @@ roc_glm_1&lt;/code&gt;&lt;/pre&gt;
 
 legend(x = &amp;quot;bottomright&amp;quot;, legend=c(&amp;quot;glm_1 AUC = 0.664&amp;quot;), 
        col = c(&amp;quot;green&amp;quot;), lty = 1, cex = 1.0)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-65-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-65-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We see that the curve lies over the diagonal but it does not have a strong tendency to touch the upper left corner. A more complex model may perform better but would involve a larger amount of predictors so naturally the question of variable selection will come up.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -4449,7 +4449,7 @@ ignored_vars&lt;/code&gt;&lt;/pre&gt;
 ## purposesmall_business       4.181
 ## purposewedding              3.477&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(varImp(model_glm_2))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-72-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-72-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Finally, we use the model to predict the test set classes. Again, we need to be aware of any pre-processing required such as mutations or treatment of missing values.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;model_glm_2_pred &amp;lt;- 
   predict(model_glm_2, 
@@ -4522,7 +4522,7 @@ pROC::plot.roc(x = roc_glm_2, legacy.axes = FALSE, xlim = c(1, 0), asp = NA,
 
 legend(x = &amp;quot;bottomright&amp;quot;, legend=c(&amp;quot;glm_1 AUC = 0.664&amp;quot;, &amp;quot;glm_2 AUC = 0.7&amp;quot;), 
        col = c(&amp;quot;green&amp;quot;, &amp;quot;blue&amp;quot;), lty = 1, cex = 1.0)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-76-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-76-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can see that the more complex model has a better ROC above the simple model.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -4823,11 +4823,11 @@ model_rpart &amp;lt;-
 ## The final value used for the model was cp = 0.01445641.&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We see that ROCAUC is ~ 70% for the best model iteration but sensitivity is worse than in some previous models. &lt;code&gt;caret&lt;/code&gt; stepped through some complexity parameters (cp) and printed results for them. We can look at &lt;code&gt;cp&lt;/code&gt; visually for the different values. In fact, under &lt;code&gt;caret&lt;/code&gt; this is the only tuning parameter available for &lt;code&gt;method = rpart&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(model_rpart)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-88-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-88-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can also visualize the final tree by accessing the &lt;code&gt;finalModel&lt;/code&gt; element from the &lt;code&gt;caret::train()&lt;/code&gt; model object. We have to add the text manually to the plot via &lt;code&gt;graphics::text()&lt;/code&gt;. We use a larger margin to have enough space for the text.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(model_rpart$finalModel, uniform = TRUE, margin = 0.2)
 graphics::text(model_rpart$finalModel)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-89-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-89-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Apparently, there are only two splits, for out_prncp_inv and gradeB.&lt;/p&gt;
 &lt;p&gt;Rather than using the default grid search for choosing the tuning parameter &lt;code&gt;cp&lt;/code&gt;, we could use random search (as mentioned earlier). For a theoretical background on why this might be useful, see e.g. &lt;a href=&#34;http://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf&#34;&gt;Random Search for Hyper-Parameter Optimization&lt;/a&gt;. We implement random search via the parameter &lt;code&gt;caret::trainControl(search = &amp;quot;random&amp;quot;)&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ctrl &amp;lt;- 
@@ -4874,7 +4874,7 @@ model_rpart&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We can see that ROCAUC went up to ~ 74% and sensitivity also increased somewhat with the random search cp parameterization which ended up using a value much smaller than grid search. We again visualize the tree to see how it changed.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(model_rpart$finalModel, uniform = TRUE, margin = 0.1)
 graphics::text(model_rpart$finalModel, cex = 0.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-91-1.png&#34; width=&#34;1344&#34; /&gt; Clearly the model has become more complex which was expected given that its ROCAUC went up. As before, we will predict test outcome with the final model.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-91-1.png&#34; width=&#34;1344&#34; /&gt; Clearly the model has become more complex which was expected given that its ROCAUC went up. As before, we will predict test outcome with the final model.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;model_rpart_pred &amp;lt;- 
   predict(model_rpart, 
           newdata = test %&amp;gt;% 
@@ -4941,7 +4941,7 @@ pROC::plot.roc(x = roc_rpart, legacy.axes = FALSE, xlim = c(1, 0), asp = NA,
 legend(x = &amp;quot;bottomright&amp;quot;, legend=c(&amp;quot;glm_1 AUC = 0.664&amp;quot;, &amp;quot;glm_2 AUC = 0.7&amp;quot;,
                                    &amp;quot;rpart AUC = 0.74&amp;quot;), 
        col = c(&amp;quot;green&amp;quot;, &amp;quot;blue&amp;quot;, &amp;quot;orange&amp;quot;), lty = 1, cex = 1.0)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-94-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-94-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;random-forest-via-randomforest-in-caret&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;12.11.2&lt;/span&gt; Random forest via randomForest in caret&lt;/h3&gt;
@@ -4991,7 +4991,7 @@ model_rf&lt;/code&gt;&lt;/pre&gt;
 ## The final value used for the model was mtry = 20.&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We can see that ROCAUC is ~ 70% at mtry = 20. We again visualize but since it is a combination of many trees, the plot will look different.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(model_rf$finalModel)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-96-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-96-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The error would most likely go further down if we had allowed more trees.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;model_rf_pred &amp;lt;- 
   predict(model_rf, 
@@ -5119,7 +5119,7 @@ model_gbm_1&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Plotting the boosting iterations.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(model_gbm_1)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: shape&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-100-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-100-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Predict.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;model_gbm_1_pred &amp;lt;- 
   predict(model_gbm_1, 
@@ -5188,7 +5188,7 @@ pROC::plot.roc(x = roc_gbm_1, legacy.axes = FALSE, xlim = c(1, 0), asp = NA,
 legend(x = &amp;quot;bottomright&amp;quot;, legend=c(&amp;quot;glm_1 AUC = 0.664&amp;quot;, &amp;quot;glm_2 AUC = 0.7&amp;quot;,
                                    &amp;quot;rpart AUC = 0.74&amp;quot;, &amp;quot;gbm AUC = 0.753&amp;quot;), 
        col = c(&amp;quot;green&amp;quot;, &amp;quot;blue&amp;quot;, &amp;quot;orange&amp;quot;, &amp;quot;brown&amp;quot;), lty = 1, cex = 1.0)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-103-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://triamus.github.io/project/2017-10-23-lending-club-loan-data-in-r_files/figure-html/unnamed-chunk-103-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
