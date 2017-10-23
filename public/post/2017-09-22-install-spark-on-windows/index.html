@@ -375,7 +375,7 @@ textFile.first() // First item in this Dataset
 # we show it with bin/pyspark but both will work if your environment variables are properly set
 </code></pre>
 
-<p>Again, we execute a minimal example from <a href="we execute a minimal example from https://spark.apache.org/examples.html" target="_blank">Apache Spark Examples</a>.</p>
+<p>Again, we execute a minimal example from <a href="https://spark.apache.org/examples.html" target="_blank">Apache Spark Examples</a>.</p>
 
 <pre><code class="language-python">text_file = sc.textFile(&quot;README.md&quot;)
 counts = text_file.flatMap(lambda line: line.split(&quot; &quot;)) \

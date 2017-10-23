@@ -1,0 +1,1941 @@
+---
+title: Lending Club Loan Data in R
+author: Alexander Wagner
+date: '2017-10-23'
+slug: lending-club-loan-data-in-r
+categories:
+  - R
+  - Data Science
+tags:
+  - data-science
+summary: An end-to-end data science walkthrough of Kaggle lending club loan data with R (in particular tidyverse, visualization libraries and caret)
+image_preview: 'lending_club_cor_mat.png'
+output:
+  blogdown::html_page:
+    toc: true
+    number_sections: true
+    toc_depth: 3
+---
+
+\pagebreak
+
+```{r, echo=FALSE}
+# output options
+options("scipen" = 100)
+```
+
+```{r setup, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+
+A case study of machine learning / modeling in R with credit default data. Data is taken from [Kaggle Lending Club Loan Data](https://www.kaggle.com/wendykan/lending-club-loan-data) but is also available publicly at [Lending Club Statistics Page](https://www.lendingclub.com/info/download-data.action). We illustrate the complete workflow from data ingestion, over data wrangling/transformation to exploratory data analysis and finally modeling approaches. Along the way will be helpful discussions on side topics such as training strategy, computational efficiency, R intricacies, and more. Note that the focus is more on methods in R rather than statistical rigour. This is meant to be a reference for an end-to-end data science workflow rather than a serious attempt to achieve best model performance.
+
+## Kaggle Data Description
+
+The files contain complete loan data for all loans issued through 2007-2015, including the current loan status (Current, Late, Fully Paid, etc.) and latest payment information. The file containing loan data through the "present" contains complete loan data for all loans issued through the previous completed calendar quarter. Additional features include credit scores, number of finance inquiries, address including zip codes, and state, and collections among others. The file is a matrix of about 890 thousand observations and 75 variables. A data dictionary is provided in a separate file.
+
+\pagebreak
+
+# Environment Setup
+
+## Libraries
+
+This will automatically install any missing libraries. Make sure to have proper proxy settings. You do not necessarily need to have all of them but only those needed for respective sections (which will be indicated).
+
+```{r}
+# define used libraries
+libraries_used <- 
+  c("lazyeval", "readr","plyr" ,"dplyr", "readxl", "ggplot2", 
+    "funModeling", "scales", "tidyverse", "corrplot", "GGally", "caret",
+    "rpart", "randomForest", "pROC", "gbm", "choroplethr", "choroplethrMaps",
+    "microbenchmark", "doParallel", "e1071")
+
+# check missing libraries
+libraries_missing <- 
+  libraries_used[!(libraries_used %in% installed.packages()[,"Package"])]
+# install missing libraries
+if(length(libraries_missing)) install.packages(libraries_missing)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
+\pagebreak
+
+# A note on libraries
+
+There are generally two ways to access functions from R packages (we use package and library interchangeably). Either via a direct access without loading the library, i.e. ```package::function()``` or by loading (attaching) the library into workspace (environment) and thus making all its functions available at once. The problem with the first option is that direct access sometimes can lead to issues (unexpected behavior/errors) and makes coding cumbersome. The problem with the second approach is a conflict of function (and other variables) names between two libraries (called masking). A third complication is that some functions require libraries to be loaded (e.g. some instances of ```caret::train()```) and thus attach the library without being explicitly told. Again this may lead to masking of functions and if user is unaware this can lead to nasty problems (conceived bugs) down the road (sometimes libraries will issue a warning upon load, e.g. ```plyr``` when ```dplyr``` is already loaded). There is no golden way (at least we are not aware of it) and so we tend to do the following
+
+* load major libraries that are used frequently into workspace but pay attention to load succession to avoid unwanted masking
+* access rarely used functions directly (being aware that they work and don't attach anything themselves)
+* sometimes use direct access to a fucntion although its library is loaded (either to make clear which library is currently used or because we explicitly need a function that has been masked due to another loaded library)
+
+We will load a few essential libraries here as they are used heavily. Other librraies may only be loaded in respective section. You can also try to follow the analysis without loading many librraies at the beginning but only when needed. Just be aware of the succession to avoid issues.
+
+## Library versions
+
+Also note that often the version of the library used matters (it always matters but what we mean is, it makes a difference) and some libraries are developed more actively than others which may lead to issues. For example, note that library ```caret``` is using ```plyr``` while the ```tidyverse``` of which ```dplyr``` (successor of ```plyr```) is part has some new concepts, e.g. the default data frame is a ```tibble::tibble()```. It seems that ```caret``` has issues with ```tibbles```, see e.g. ["Wrong model type for classification" in regression problems in R-Caret](https://stackoverflow.com/questions/43018879/wrong-model-type-for-classification-in-regression-problems-in-r-caret).
+
+```{r}
+library(plyr)
+library(tidyverse)
+library(caret)
+```
+
+\pagebreak
+
+# Data Import
+
+Refer to section [Overview](#overview) to see how the data may be acquired.
+
+The loans data can be conveniently read via ```readr::read_csv()```. Note that the function tries to determine the variable type by reading the first 1,000 rows which does not always guarantee correct import especially in cases of missing values at the begining of the file. Other packages treat imports differently, for example ```data.table::fread()``` takes a sample of 1,000 rows to determine column types (100 rows from 10 different points) which seems to get more robust results than ```readr::read_csv()```. Both package functions allow the explicit definition of column classes, for ```readr::read_csv()``` it is parameter ```col_types``` and for ```data.table::fread()``` it is parameter ```colClasses```. Alternatively, ```readr::read_csv()``` offers the parameter ```guess_max``` that allows increasing the number of rows being guessed similar to SAS import procedure parameter ```guessingrows```. Naturally, import time increases if more rows are guessed. For details on ```readr``` including comparisons against ```Base R``` and ```data.table::fread()``` see [readr](https://cran.r-project.org/web/packages/readr/README.html).
+
+```{r message=F, warning=F, results = 'hide'}
+path <- "D:/data/lending_club"
+loans <- readr::read_csv(paste0(path, "./loan.csv"))
+```
+
+The meta data comes in an Excel file and needs to be parsed via a special library, in this case we use ```readxl```.
+
+```{r message=F, warning=F}
+library(readxl)
+# Load the Excel workbook
+excel_file = paste0("./LendingClubDataDictionary.xlsx")
+# see available tabs
+excel_sheets(paste0(path, excel_file))
+# Read in the first worksheet
+meta_loan_stats = read_excel(paste0(path, excel_file), sheet = "LoanStats")
+meta_browse_notes = read_excel(paste0(path, excel_file), sheet = "browseNotes")
+meta_reject_stats = read_excel(paste0(path, excel_file), sheet = "RejectStats")
+```
+
+\pagebreak
+
+# Meta Data
+
+Let's have a look at the meta data in more detail. First, which variables are present in loan data set and what is their type. Then check meta data information and finally compare the two to see if anything is missing.
+
+The usual approach may be to use ```base::str()``` function to get a summary of the data structure. However, it may be useful to quantify the "information power" of different metrics and dimensions by looking at the ratio of zeros and missing values to overall observations. This will not always reveal the truth (as there may be variables that are only populated if certain conditions apply) but it still gives some indication. The [funModeling](https://cran.r-project.org/web/packages/funModeling/index.html) package offers the function ```funModeling::df_status()``` for that. It does not scale very well and has quite a few dependencies (so a direct call is preferred over a full library load) but it suits the purpose for this data. Unfortunately, it does not return the number of rows and columns. The data has `r dim(loans)[1]` observations (rows) and `r dim(loans)[2]` variables (columns).
+
+We will require the meta data at a later stage so we assign it to a variable. The function ```funModeling::df_status()``` has parameter ```print_results = TRUE``` set by default which means the data will be assigned and printed at the same time.
+
+```{r}
+meta_loans <- funModeling::df_status(loans, print_results = FALSE)
+knitr::kable(meta_loans)
+```
+
+It seems the data has two unique identifiers ```id``` and ```member_id```. There is no variable with 100% missing or zero values i.e. information power of zero. There are a few which have a high ratio of NAs so the meta description needs to be checked whether this is expected. There are also variables which have only one unique value, e.g. ```policy_code```. Again, the meta description should be checked to see the rationale but such dimensions are not useful for any analysis or model buidling. 
+
+Our meta table also contains the absolute number of unique values which is helpful for plotting (for attributes that is). Another interesting ratio to look at is that of unique values over all values for any attribute. A high ratio would indicate that this is probably a "free" field, i.e. no particular constraints are put on its values (except key variables of course but in case of uniqueness their ratio should be one as is the case with ```id``` and ```member_id```). When looking into correlations, these high ratio fields will have low correlation with other fields but they may still be useful e.g. because they have "direction" information (e.g. the direction of an effect) or, in the case of strings, may be useful for text analytics. We thus add a respective variable to the meta data. For improved readability, we use the ```scales::percent()``` function to convert output to percent.
+
+```{r}
+meta_loans <-
+  meta_loans %>%
+  mutate(uniq_rat = unique / nrow(loans))
+
+meta_loans %>%
+  select(variable, unique, uniq_rat) %>%
+  mutate(unique = unique, uniq_rat = scales::percent(uniq_rat)) %>%
+  knitr::kable()
+```
+
+An attribute like ```emp_title``` has over 30% unique values which makes it a poor candidate for modeling as it seems borrowers are free to describe their notion of employment title. A sophisticated model, however, may even take advantage of the data by checking the strings for "indicator words" that may be associated with an honest or a dishonest (credible / non-credible) candidate.
+
+## Data Transformation
+
+We should also check the variable types. As mentioned in section [Data Import](#data-import) the import function uses heuristics to guess the data types and these may not always work.
+
+* annual_inc_joint = character but should be numeric
+* dates are read as character and need to be transformed
+
+First let's transform character to numeric. We make use of ```dplyr::mutate_at()``` function and provide a vector of columns to be mutated (transformed). In general, when using libraries from the ```tidyverse``` (these libraries are mainly authored by Hadley Wickham and other RStudio people), most functions offer a standard version as opposed to an NSE (non-standard evaluation) version which can take character values as variable names. These functions usually have a trailing underscore, e.g. ```dplyr::select_()``` as compared to the non-standard evaluation function ```dplyr::select()```. For details, see the dplyr vignette on [Non-standard evaluation](https://cran.r-project.org/web/packages/dplyr/vignettes/nse.html). However, note that the ```tidyverse``` libraries are still changing a fair amount so best to cross-check whether used function is the most efficient one for given task or if there is a new one introduced in the mean time.
+
+As opposed to packages like ```data.table``` tidyverse packages do not alter their input in place so we have to re-assign the result to the original object. We could also create a new object but this is memory-inefficient (in fact even the re-assignment to the original object creates a temporary copy). For more details on memory management, see chapter [Memory](http://adv-r.had.co.nz/memory.html) in Hadley Wickham's book "Advanced R".
+
+```{r}
+chr_to_num_vars <- 
+  c("annual_inc_joint", "mths_since_last_major_derog", "open_acc_6m",
+    "open_il_6m", "open_il_12m", "open_il_24m", "mths_since_rcnt_il",
+    "total_bal_il", "il_util", "open_rv_12m", "open_rv_24m",
+    "max_bal_bc", "all_util", "total_rev_hi_lim", "total_cu_tl",
+    "inq_last_12m", "dti_joint", "inq_fi", "tot_cur_bal", "tot_coll_amt")
+
+loans <-
+  loans %>%
+  mutate_at(.funs = funs(as.numeric), .vars = chr_to_num_vars)
+```
+
+Let's have a look at the date variables to see how they need to be transformed.
+
+```{r}
+chr_to_date_vars <- 
+  c("issue_d", "last_pymnt_d", "last_credit_pull_d",
+    "next_pymnt_d", "earliest_cr_line", "next_pymnt_d")
+
+loans %>%
+  select_(.dots = chr_to_date_vars) %>%
+  str()
+
+head(unique(loans$next_pymnt_d))
+
+for (i in chr_to_date_vars){
+  print(head(unique(loans[, i])))
+  }
+```
+
+It seems the date format is consistent and follows month-year convention. We can use the ```base::as.Date()``` function to convert this to a date format. The function requires a day as well so we simply add the 1st of each month to the existing character string via pasting together strings using ```base::paste0()```. Note that ```base::paste0("bla", NA)``` will not return ```NA``` but the concatenated string (here: ```blaNA```). Conveniently, ```base::as.Date()``` will return ```NA``` so we can leave it at that. Alternatively, we could include an exception handler for NA values to explicitly handle those because we saw previously that some date variables include NA values. One way to approach that would be to wrap the date conversion function into a ```base::ifelse()``` call as so ```ifelse(is.na(x), NA, some_date_function()```. However, it seems that ```base::ifelse()``` is dropping the date class that we just created with our date function, for details, see e.g. [How to prevent ifelse from turning Date objects into numeric objects](http://stackoverflow.com/questions/6668963/how-to-prevent-ifelse-from-turning-date-objects-into-numeric-objects). As we do not want to deal with these issues at this moment, we simply go with the default behavior of ```base::as.Date()``` as it returns ```NA``` in cases of bad input anyway. 
+
+Let's also return the NA values of the input to remind ourselves of the number. It should coincide with the number of NA after we have converted / transformed the date variables.
+
+```{r}
+meta_loans %>% 
+  select(variable, q_na) %>% 
+  filter(variable %in% chr_to_date_vars)
+```
+
+Finally, this is how our custom date conversion function will look like, we call it ```convert_date()``` and it will take the string value to be converted as input. We define the date format by following the function conventions of ```base::as.Date()```, for details see ```?base::as.Date```. We could have also used an [anonymous function](http://adv-r.had.co.nz/Functional-programming.html#anonymous-functions) directly in the ```dplyr::mutate_at()``` call but the creation of a specific function seemed appropriate as we may use it several times.
+
+```{r}
+convert_date <- function(x){
+  as.Date(paste0("01-", x), format = "%d-%b-%Y")
+  } 
+
+loans <-
+  loans %>%
+  mutate_at(.funs = funs(convert_date), .vars = chr_to_date_vars)
+```
+
+```{r}
+num_vars <- 
+  loans %>% 
+  sapply(is.numeric) %>% 
+  which() %>% 
+  names()
+
+meta_loans %>%
+  select(variable, p_zeros, p_na, unique) %>%
+  filter_(~ variable %in% num_vars) %>%
+  knitr::kable()
+```
+
+We also see that variables ```mths_since_last_delinq```, ```mths_since_last_record```, ```mths_since_last_major_derog```, ```dti_joint``` and ```annual_inc_joint``` have a large share of NA values. If we think about this in more detail, it may be reasonable to assume that NA values for the variables ```mths_since_last_delinq```, ```mths_since_last_record``` and ```mths_since_last_major_derog``` actually indicate that there was no event/record of any missed payment so there cannot be any time value. Analogously, a missing value for ```annual_inc_joint``` and ```dti_joint``` may simply indicate that it is a single borrower or the partner has no income. Thus, the first three variables actually carry valuable information that may be lost if we ignored it. We will thus replace the missing values with zeros to make them available for modeling. It should be noted though that a zero time could indicate an event that is just happening so we have to document our assumptions carefully.
+
+```{r}
+na_to_zero_vars <-
+  c("mths_since_last_delinq", "mths_since_last_record",
+    "mths_since_last_major_derog")
+
+loans <- 
+  loans %>%
+  mutate_at(.vars = na_to_zero_vars, .funs = funs(replace(., is.na(.), 0)))
+```
+
+These transformations should have us covered for now. We recreate the meta table after all these changes.
+
+```{r}
+meta_loans <- funModeling::df_status(loans, print_results = FALSE)
+meta_loans <-
+  meta_loans %>%
+  mutate(uniq_rat = unique / nrow(loans))
+```
+
+## Additional Meta Data File
+
+Next we look at the meta descriptions provided in the additional Excel file.
+
+```{r}
+knitr::kable(meta_loan_stats[,1:2])
+```
+
+As expected, ```id``` is "`r  unname(as.data.frame(meta_loan_stats[which(meta_loan_stats$LoanStatNew == "id"),2], drop = TRUE, row.names = FALSE))`" and ```member_id``` is "`r  unname(as.data.frame(meta_loan_stats[which(meta_loan_stats$LoanStatNew == "member_id"),2], drop = TRUE, row.names = FALSE))`". The ```policy_code``` is "`r  unname(as.data.frame(meta_loan_stats[which(meta_loan_stats$LoanStatNew == "policy_code"),2], drop = TRUE, row.names = FALSE))`". That means there could be different values but as we have seen before in this data it only takes on one value.
+
+Finally, let's look at variables that are either in the data and not in the meta description or vice versa. The ```dplyr::setdiff()``` function does what its name suggests, just pay attention to the order of arguments to understand which difference you actually get.
+
+Variables in loans data but not in meta description.
+
+```{r}
+dplyr::setdiff(colnames(loans), meta_loan_stats$LoanStatNew)
+```
+
+Variables in meta description but not in loans data.
+
+```{r}
+dplyr::setdiff(meta_loan_stats$LoanStatNew, colnames(loans))
+```
+
+It seems for the loans variables ```verification_status_joint``` and  ```total_rev_hi_lim``` there are actually equivalents in the meta data but they carry slightly different names or have leading / trailing blanks. There are quite a few variables in the meta description that are not in the data. But that should be less of a concern as we don't need those anyway.
+
+\pagebreak
+
+# Defining default
+
+Our ultimate goal is the prediction of loan defaults from a given set of observations by selecting explanatory (independent) variables (also called feature in machine learning parlance) that result in an acceptable model performance as quantified by a pre-defined measure. This goal will also impact our exploratory data analysis. We will try to build some intuition about the data given our knowledge of the final goal. If we were given a data discovery task such as detecting interesting patterns via unsupervised learning methods we would probably perform a very different analysis.
+
+For loans data the usual variable of interest is a delay or a default on required payments. So far we haven't looked at any default variable because, in fact, there is no one variable indicating it. One may speculate about the reasons but a plausible explanation may be that the definiton of default depends on the perspective. A risk-averse person may classify any delay in scheduled payments immediately as default from day one while others may apply a step-wise approach considering that borrowers may pay at a later stage. Yet another classification may look at any rating deterioration and include a default as last grade in a rating scale.
+
+Let's look at potential variables that may indicate a default / delay in payments: 
+
+* loan_status: Current status of the loan
+* delinq_2yrs: The number of 30+ days past-due incidences of delinquency in the borrower's credit file for the past 2 years
+* mths_since_last_delinq: The number of months since the borrower's last delinquency.
+
+We can look at the unique values of above variables by applying ```base::unique()``` via the ```purrr::map()``` function to each column of interest. The ```purrr``` library is part of the ```tidyverse``` set of libraries and applies functional paradigms via a level of abstraction. 
+
+```{r}
+default_vars <- c("loan_status", "delinq_2yrs", "mths_since_last_delinq")
+purrr::map(.x = loans[, default_vars], .f = base::unique)
+```
+
+We can see that ```delinq_2yrs``` shows only a few unique values which is a bit surprising as it could take many more values given its definition. The variable ```mths_since_last_delinq``` has some surprisingly large values. Both variables only indicate a delinquency in the past so they cannot help with the default definition.
+
+The variable loan status seems to be an indicator of the current state a particular loan is in. We should also perform a count of the different values.
+
+```{r}
+loans %>%
+  group_by(loan_status) %>%
+  summarize(count = n(), rel_count = count/nrow(loans)) %>%
+  knitr::kable()
+```
+
+It is not immediately obvious what the different values stand for, so we refer to Lending Club's documentation about "[What do the different Note statuses mean?](https://help.lendingclub.com/hc/en-us/articles/215488038-What-do-the-different-Note-statuses-mean-)"
+
+* Fully Paid: Loan has been fully repaid, either at the expiration of the 3- or 5-year year term or as a result of a prepayment.
+* Current: Loan is up to date on all outstanding payments.
+* Does not meet the credit policy. Status:Fully Paid: No explanation but see "fully paid".
+* Issued: New loan that has passed all Lending Club reviews, received full funding, and has been issued.
+* Charged Off: Loan for which there is no longer a reasonable expectation of further payments. Generally, Charge Off occurs no later than 30 days after the Default status is reached. Upon Charge Off, the remaining principal balance of the Note is deducted from the account balance. Learn more about the [difference between "default" and "charge off"](https://help.lendingclub.com/hc/en-us/articles/216127747).
+* Does not meet the credit policy. Status:Charged Off: No explanation but see "Charged Off"
+* Late (31-120 days): Loan has not been current for 31 to 120 days.
+* In Grace Period: Loan is past due but within the 15-day grace period. 
+* Late (16-30 days): Loan has not been current for 16 to 30 days.
+* Default: Loan has not been current for 121 days or more.
+
+Given above information, we will define a default as follows.
+
+```{r}
+defaulted <- 
+  c("Default", 
+    "Does not meet the credit policy. Status:Charged Off", 
+    "In Grace Period", 
+    "Late (16-30 days)", 
+    "Late (31-120 days)")
+```
+
+We now have to add an indicator variable to the data. We do this by reassigning the mutated data to the original object. An alternative would be to update the object via a compound assignment pipe-operator from the magrittr package ```magrittr::%<>%``` or an assignment in place ```:=``` from the ```data.table``` package. We use a Boolean (True/False) indicator variable which will have nicer plotting properties (as it is treated like a character variable by the plotting library ```ggplot2```) rather than a numerical value such as 1/0. R is usually clever enough to still allow calculations on Boolean values.
+
+```{r}
+loans <-
+  loans %>%
+  mutate(default = ifelse(!(loan_status %in% defaulted), FALSE, TRUE))
+```
+
+Given our new indicator variable, we can now compute the frequency of actual defaults in the training set. It is around `r loans %>% summarise(default_freq = sum(default / n()))`.
+
+```{r}
+loans %>%
+  summarise(default_freq = sum(default / n()))
+
+# alternatively in a table
+table(loans$default) / nrow(loans)
+```
+
+\pagebreak
+
+# Removing variables deemed unfit for most modeling
+
+As stated before some variables may actually have information value but are kicked out as we deem them unfit for most practical purposes. Arguably one would have to look at the actual value distribution as e.g. a high number of unique values may be non-sense values for only a few loans but we don't dig deeper here.
+
+We can get rid of following variables with given reason
+
+* annual_inc_joint: high NA ratio
+* dti_joint: high NA ratio
+* verification_status_joint: high NA ratio
+* policy_code: only one unique value -> standard deviation = 0
+* id: key variable
+* member_id: key variable
+* emp_title: high amount of unique values
+* url: high amount of unique values
+* desc: high NA ratio
+* title: high amount of unique values
+* next_pymnt_d: high NA ratio
+* open_acc_6m: high NA ratio
+* open_il_6m: high NA ratio
+* open_il_12m: high NA ratio
+* open_il_24m: high NA ratio
+* mths_since_rcnt_il: high NA ratio
+* total_bal_il: high NA ratio
+* il_util: high NA ratio
+* open_rv_12m: high NA ratio
+* open_rv_24m: high NA ratio
+* max_bal_bc: high NA ratio
+* all_util: high NA ratio
+* total_rev_hi_lim: high NA ratio
+* inq_fi: high NA ratio
+* total_cu_tl: high NA ratio
+* inq_last_12m: high NA ratio
+
+```{r}
+vars_to_remove <- 
+  c("annual_inc_joint", "dti_joint", "policy_code", "id", "member_id",
+    "emp_title", "url", "desc", "title", "open_acc_6m", "open_il_6m", 
+    "open_il_12m", "open_il_24m", "mths_since_rcnt_il", "total_bal_il", 
+    "il_util", "open_rv_12m", "open_rv_24m", "max_bal_bc", "all_util",
+    "total_rev_hi_lim", "inq_fi", "total_cu_tl", "inq_last_12m",
+    "verification_status_joint", "next_pymnt_d")
+
+loans <- loans %>% select(-one_of(vars_to_remove))
+```
+
+We further remove variables for different (stated) reasons
+
+* sub_grade: contains same (but more granular) information as grade
+* loan_status: has been used to define target variable
+
+```{r}
+vars_to_remove <- 
+  c("sub_grade", "loan_status")
+
+loans <- loans %>% select(-one_of(vars_to_remove))
+```
+
+\pagebreak
+
+# A note on hypothesis generation vs. hypothesis confirmation
+
+Before we start our analysis, we should be clear about its aim and what the data is used for. In the book "R for Data Science" the authors put it quite nicely under the name [Hypothesis generation vs. hypothesis confirmation](http://r4ds.had.co.nz/model-intro.html):
+
+> 1. Each observation can either be used for exploration or confirmation, not both.
+> 2. You can use an observation as many times as you like for exploration, but you can only use it once for confirmation. As soon as you use an observation twice, you've switched from confirmation to exploration.
+> This is necessary because to confirm a hypothesis you must use data independent of the data that you used to generate the hypothesis. Otherwise you will be over optimistic. There is absolutely nothing wrong with exploration, but you should never sell an exploratory analysis as a confirmatory analysis because it is fundamentally misleading.
+
+In a strict sense, this requires us to split the data into different sets. The authors go on suggesting a split:
+
+> 1. 60% of your data goes into a training (or exploration) set. You're allowed to do anything you like with this data: visualise it and fit tons of models to it.
+> 2. 20% goes into a query set. You can use this data to compare models or visualisations by hand, but you're not allowed to use it as part of an automated process.
+> 3. 20% is held back for a test set. You can only use this data ONCE, to test your final model.
+
+This means that even for exploratory data analysis (EDA), we would only look at parts of the data. We will split the data into two sets with 80% train and 20% test ratio at random. As we are dealing with time-series data, we could also split the data by time. But time itself may be an explanatory variable which could be modeled. All exploratory analysis will be performed on the training data only. We will use ```base::set.seed()``` to make the random split reproducible. You can have an argument whether it is sensible to even use split data for EDA but EDA usually builds your intuition about the data and thus will shape data transformation and model decisions. The test data allows for testing all these assumptions in addition to the actual model performance. There are other methods such as cross validation which do not necessarily require a test data set but we have enough observations to afford one.
+
+One note of caution is necessary here. Since not all data is used for model fitting, the test data may have labels that do not occur in the training set and with same rationale feautures may have unseen values. In addition, the data is imbalanced, i.e. only a few lenders default while many more do not. The last fact may actually require a non-random split considering the class label (default / non-default). The same may hold true for the features (independent variables). For more details on dealing with imbalanced data, see [Learning from Imbalanced Classes](https://www.svds.com/learning-imbalanced-classes/) or [Learning from Imbalanced Data](http://www.ele.uri.edu/faculty/he/PDFfiles/ImbalancedLearning.pdf). Tom Fawcett puts it nicely in previous first mentioned blog post:
+
+> Conventional algorithms are often biased towards the majority class because their loss functions attempt to optimize quantities such as error rate, not taking the data distribution into consideration. In the worst case, minority examples are treated as outliers of the majority class and ignored. The learning algorithm simply generates a trivial classifier that classifies every example as the majority class.
+
+We can do the split manually (see commented out code) but in order to ensure class distributions within the split data, we use function ```createDataPartition()``` from the ```caret``` package which performs stratified sampling. For details on the function, see [The caret package: 4.1 Simple Splitting Based on the Outcome](https://topepo.github.io/caret/data-splitting.html). 
+
+```{r}
+# ## manual approach
+# # 80% of the sample size
+# smp_size <- floor(0.8 * nrow(loans))
+# 
+# # set the seed to make your partition reproductible
+# set.seed(123)
+# train_index <- sample(seq_len(nrow(loans)), size = smp_size)
+# 
+# train <- loans[train_index, ]
+# test <- loans[-train_index, ]
+
+## with caret
+set.seed(6438)
+
+train_index <- 
+  caret::createDataPartition(y = loans$default, times = 1, 
+                             p = .8, list = FALSE)
+
+train <- loans[train_index, ]
+test <- loans[-train_index, ]
+```
+
+\pagebreak
+
+# Exploratory Data Analysis
+
+There are many excellent resources on exploratory analysis, e.g.
+
+* [A protocol for data exploration to avoid common statistical problems](http://onlinelibrary.wiley.com/doi/10.1111/j.2041-210X.2009.00001.x/full)
+
+A visual look at the data should always precede any model considerations. A useful visualization library is ```ggplot2``` (which is part of the ```tidyverse``` and further on also referred to as ggplot) that requires a few other libraries on top for extensions such as ```scales```. We are not after publication-ready visualizations yet as this phase is considered data exploration or data discovery rather than results reporting. Nontheless, used visualization libraries already produce visually appealing graphics as they use smart heuristics and default values to guess sensible parameter settings.
+
+```{r message=F, warning=F}
+library(scales)
+```
+
+The most important questions around visualization are which variables are numeric and if so are they continous or discrete and which are strings. Furthermore, which variables are attributes (categorical) and which make up sensible metric-attribute pairs. An important information for efficient visualization with categorical variables is also the amount of unique values they can take and the ratio of zero or missing values, both which were already analyzed in section [Meta Data](#meta-data). In a first exploratory analysis we aim for categorical variables that have high information power and not too many unique values to keep the information density at a manageable level. Also consider group sizes and differences between median and mean driven by outliers. Especially when drawing conclusions from summarized / aggregated information, we should be aware of group size. We thus may add this info directly in the plot or look at it before plotting in a grouped table.
+
+A generally good idea is to look at the distributions of relevant continous variables. These are probably
+
+* loan_amnt
+* funded_amnt
+* funded_amnt_inv
+* annual_inc
+
+Among the target variable ```default``` some interesting categorical variables might be
+
+* term
+* int_rate
+* grade
+* emp_title
+* home_ownership
+* verification_status
+* issue_d (timestamp)
+* loan_status
+* purpose
+* zip_code (geo-info)
+* addr_state (geo-info)
+* application_type
+
+Assign continous variables to a character vector and reshape data for plotting of distributions.
+
+```{r}
+income_vars <- c("annual_inc")
+loan_amount_vars <- c("loan_amnt", "funded_amnt", "funded_amnt_inv")
+```
+We can reshape and plot the original data for specified variables in a tidyr-dplyr-ggplot pipe. For details on tidying with tidyr, see [Data Science with R - Data Tidying](http://garrettgman.github.io/tidying/) or [Data Processing with dplyr & tidyr](https://rpubs.com/bradleyboehmke/data_wrangling).
+
+```{r}
+train %>%
+  select_(.dots = income_vars) %>%
+  gather_("variable", "value", gather_cols = income_vars) %>%
+  ggplot(aes(x = value)) +
+  facet_wrap(~ variable, scales = "free_x", ncol = 3) +
+  geom_histogram()
+```
+
+We can see that a lot of loans have corresponding annual income of zero and in general income seems low. As already known, joint income has a large number of NA values (i.e. cannot be displayed) and those few values that are present do not seem to have significant exposure. Most loan applications must have been submitted by single income borrowers, i.e. either single persons or single-income households.
+
+```{r}
+train %>%
+  select_(.dots = loan_amount_vars) %>%
+  gather_("variable", "value", gather_cols = loan_amount_vars) %>%
+  ggplot(aes(x = value)) +
+  facet_wrap(~ variable, scales = "free_x", ncol = 3) +
+  geom_histogram()
+```
+
+The loan amount distributions seems similar in shape suggesting not too much divergence between the loan amount applied for, the amount committed and the amount invested.
+
+We had already identified a number of interesting categorical variables. Let's combine our selection with the meta information gathered in an earlier stage to see the information power and uniqueness.
+
+```{r}
+categorical_vars <- 
+  c("term", "grade", "sub_grade", "emp_title", "home_ownership",
+    "verification_status", "loan_status", "purpose", "zip_code",
+    "addr_state", "application_type", "policy_code")
+
+meta_loans %>%
+  select(variable, p_zeros, p_na, type, unique) %>%
+  filter_(~ variable %in% categorical_vars) %>%
+  knitr::kable()
+```
+
+This gives us some ideas on what may be useful for a broad data exploration. Variables such as ```emp_title``` have too many unique values to be suitable for a classical categorical graph. Other variables may lend themselves to pairwise or correlation graphs such as ```int_rate``` while again others may be used in time series plots such as ```issue_d```. We may even be able to plot some appealing geographical plots with geolocation variables such as ```zip_code``` or ```addr_state```.
+
+## Grade
+
+For a start, let's look at grade which seems to be a rating classification scheme that Lending Club uses to assign loans into risk buckets similar to other popular rating schemes like S&P or Moodys. For more details, see [Lending Club Rate Information](https://www.lendingclub.com/foliofn/rateDetail.action). For now, it suffices to know that grades take values A, B, C, D, E, F, G where A represents the highest quality loan and G the lowest.
+
+As a first relation, we investigate the distribution of loan amount over the different grades with a standard [boxplot](https://en.wikipedia.org/wiki/Box_plot) highlighting potential outliers in red. One may also select a pre-defined theme from the ```ggthemes``` package by adding a call to ggplot such as ```theme_economist()``` or even create a theme oneself. For details on themes, see [ggplot2 themes](http://docs.ggplot2.org/dev/vignettes/themes.html) and [Introduction to ggthemes](https://cran.r-project.org/web/packages/ggthemes/vignettes/ggthemes.html).
+
+As mentioned before we want to be group size aware so let's write a short function to be used inside the ```ggplot::geom_boxplot()``` call in combination with ```ggplot::stat_summary()``` where we can call user-defined functions using parameter ```fun.data```. As it is often the case with plots, we need to experiment with the position of additional text elements which we achieve by scaling the y-position with some constant multiplier around the median (as the boxplot will have the median as horizontal bar within the rectangles). The mean can be added in a similar fashion, however we don't need to specify the y-position explicitly. The count as text and the mean as point may overlap themselves and with the median horizontal bar. This is acceptable in an exploratory setting. For publication-ready plots one would have to perform some adjustments.
+
+```{r}
+# see http://stackoverflow.com/questions/15660829/how-to-add-a-number-of-observations-per-group-and-use-group-mean-in-ggplot2-boxp
+give_count <- 
+  stat_summary(fun.data = function(x) return(c(y = median(x)*1.06,
+                                               label = length(x))),
+               geom = "text")
+
+# see http://stackoverflow.com/questions/19876505/boxplot-show-the-value-of-mean
+give_mean <- 
+  stat_summary(fun.y = mean, colour = "darkgreen", geom = "point", 
+               shape = 18, size = 3, show.legend = FALSE)
+```
+
+
+```{r}
+train %>%
+  ggplot(aes(grade, loan_amnt)) +
+  geom_boxplot(fill = "white", colour = "darkblue", 
+               outlier.colour = "red", outlier.shape = 1) +
+  give_count +
+  give_mean +
+  scale_y_continuous(labels = comma) +
+  facet_wrap(~ default) +
+  labs(title="Loan Amount by Grade", x = "Grade", y = "Loan Amount \n")
+```
+
+We can derive a few points from the plot:
+
+* there is not a lot of difference between default and non-default
+* lower quality loans tend to have a higher loan amount
+* there are virtually no outliers except for grade B
+* the loan amount spread (IQR) seems to be slightly higher for lower quality loans
+
+According to Lending Club's rate information, we would expect a strong increasing relationship between grade and interest rate so we can test this. We also consider the term of the loan as one might expect that longer term loans could have a higher interest rate.
+
+```{r}
+train %>%
+  ggplot(aes(grade, int_rate)) +
+  geom_boxplot(fill = "white", colour = "darkblue", 
+               outlier.colour = "red", outlier.shape = 1) +
+  give_count +
+  give_mean +
+  scale_y_continuous(labels = comma) +
+  labs(title="Interest Rate by Grade", x = "Grade", y = "Interest Rate \n") +
+  facet_wrap(~ term)
+```
+
+We can derive a few points from the plot:
+
+* interest rate increases with grade worsening
+* a few loans seem to have an equally low interest rate independent of grade
+* the spread of rates seems to increase with grade worsening
+* there tend to be more outliers on the lower end of the rate
+* The 3-year term has a much higher number of high-rated borrowers while the 5-year term has a larger number in the low-rating grades
+
+## Home Ownership
+
+We can do the same for home ownership.
+
+```{r}
+train %>%
+  ggplot(aes(home_ownership, int_rate)) +
+  geom_boxplot(fill = "white", colour = "darkblue", 
+               outlier.colour = "red", outlier.shape = 1) +
+  give_count +
+  give_mean +
+  scale_y_continuous(labels = comma) +
+  facet_wrap(~ default) +
+  labs(title="Interest Rate by Home Ownership", x = "Home Ownership", y = "Interest Rate \n")
+```
+
+We can derive a few points from the plot:
+
+* there seems no immediate conclusion with respect to the impact of home ownership, e.g. we can see that median/mean interest rate is higher for people who own a house than for those who still pay a mortgage.
+* interest rates are highest for values "any" and "none" which could be loans of limited data quality but there are very few data points.
+* interest rate is higher for default loans, which is probably driven by other factors (e.g. grade)
+
+## Loan Amount and Income
+
+Another interesting plot may be the relationship between loan amount and funded / invested amount. As all variables are continous, we can do that with a simple [scatterplot](https://en.wikipedia.org/wiki/Scatter_plot) but we will need to reshape the data to have both loan values plotted against loan amount.
+
+In fact the reshaping here may be slightly odd as we like to display the same variable on the x-axis but different values on the y-axis facetted by their variable names. To achieve that, we gather the data three times with the same x variable but changing y variables.
+
+```{r}
+funded_amnt <-
+  train %>%
+  transmute(loan_amnt = loan_amnt, value = funded_amnt, 
+              variable = "funded_amnt")
+
+funded_amnt_inv <-
+  train %>%
+  transmute(loan_amnt = loan_amnt, value = funded_amnt_inv, 
+              variable = "funded_amnt_inv")
+
+plot_data <- rbind(funded_amnt, funded_amnt_inv)
+# remove unnecessary data using regex
+ls()
+rm(list = ls()[grep("^funded", ls())])
+```
+
+Now let's plot the data.
+
+```{r dev = "png"}
+plot_data %>%
+  ggplot(aes(x = loan_amnt, y = value)) +
+  facet_wrap(~ variable, scales = "free_x", ncol = 3) +
+  geom_point()
+```
+
+We can derive a few points from the plot:
+
+* there are instances when funded amount is smaller loan amount
+* there seems to be a number of loans where investment is smaller funded amount i.e. not the full loan is invested in
+
+Let's do the same but only for annual income versus loan amount.
+
+```{r dev = "png"}
+train %>%
+  ggplot(aes(x = annual_inc, y = loan_amnt)) +
+  geom_point()
+```
+
+We can derive a few points from the plot:
+
+* there is no immediatly discernible relationship
+* there are quite a few income outliers with questionable values (e.g. why would a person with annual income `r max(loans$annual_inc, na.rm = TRUE)` request a loan amount of `r loans$loan_amnt[which.max(loans$annual_inc)]`)
+
+## Time Series
+
+Now let's take a look at interest rates over time but split the time series by grade to see if there are differences in interest rate development depending on the borrower grade. Again we make use of a dplyr pipe, first selecting the variables of interest, then grouping by attributes and finally summarising the metric interest rate by taking the mean for each goup. We use ```facet_wrap``` to split by attribute grade. As we are using the mean for building an aggregate representation, we should be weary of outliers and group size which we had already looked at earlier (ignoring time dimension).
+
+```{r}
+train %>%
+  select(int_rate, grade) %>%
+  group_by(grade) %>%
+  summarise(int_rate_mean = mean(int_rate, na.rm = TRUE),
+            int_rate_median = median(int_rate, na.rm = TRUE),
+            n = n()) %>%
+  knitr::kable()
+```
+
+Group size are relatively large except for grade G which may have only a few hundred loans per group when grouping by grade and date. Mean and median seem fairly close at this non-granular level. Let's plot the data.
+
+```{r}
+train %>%
+  select(int_rate, grade, issue_d) %>%
+  group_by(grade, issue_d) %>%
+  summarise(int_rate_mean = mean(int_rate, na.rm = TRUE)) %>%
+  ggplot(aes(issue_d, int_rate_mean)) +
+  geom_line(color= "darkblue", size = 1) +
+  facet_wrap(~ grade)
+```
+
+We can derive a few points from the plot:
+
+* the mean interest rate is falling or relatively constant for high-rated clients
+* the mean interest rate is increasing significantly for low-rated clients
+
+Let's also look at loan amounts over time in the same manner.
+
+```{r}
+train %>%
+  select(loan_amnt, grade, issue_d) %>%
+  group_by(grade, issue_d) %>%
+  summarise(loan_amnt_mean = mean(loan_amnt, na.rm = TRUE)) %>%
+  ggplot(aes(issue_d, loan_amnt_mean)) +
+  geom_line(color= "darkblue", size = 1) +
+  facet_wrap(~ grade)
+```
+
+We can derive a few points from the plot:
+
+* the mean loan amount is increasing for all grades
+* while high-rated clients have some mean loan amount volatility, it is much higher for low-rated clients
+
+## Geolocation Plots
+
+Let's remind ourselves of the geolocation variables in the data and their information power.
+
+* zip_code (geo-info)
+* addr_state (geo-info)
+
+```{r}
+geo_vars <- c("zip_code", "addr_state")
+
+meta_loans %>%
+  select(variable, p_zeros, p_na, type, unique) %>%
+  filter_(~ variable %in% geo_vars) %>%
+  knitr::kable()
+
+loans %>%
+  select_(.dots = geo_vars) %>%
+  str()
+```
+
+We see that ```zip_code``` seems to be the truncated US postal code with only first three digits having a value. The ```addr_state``` seems to be the state names in a two-letter abbreviation.
+
+We can use the ```choroplethr``` package to work with maps (alternatives may be ```maps``` among other packages). While ```choroplethr``` provides functions to work with the data, its sister package ```choroplethrMaps``` contains corresponding maps that can be used by ```choroplethr```. One issue with ```choroplethr``` is that it attaches the package ```plyr``` which means many functions from ```dplyr``` are masked as it is the successor to ```plyr```. Thus we do not load the package ```choroplethr``` despite using its functions frequently. However, we need to load ```choroplethrMaps``` as it has some data that is not exported from its namespace so syntax like ```choroplethrMaps::state.map``` where ```state.map``` is the rdata file does not work. An alternative might be to load the file directly by going to the underlying directory, e.g. ```R-3.x.x\library\choroplethrMaps\data``` but this is cumbersome. As discussed before, when attaching a library, we just need to make sure that important functions of other packages are not masked. In this case it's fine.
+
+For details on those libraries, see [CRAN choroplethr](https://cran.r-project.org/web/packages/choroplethr) and [CRAN choroplethrMaps](https://cran.r-project.org/web/packages/choroplethrMaps).
+
+First we aggregate the default rate by state.
+
+```{r}
+default_rate_state <- 
+  train %>%
+  select(default, addr_state) %>%
+  group_by(addr_state) %>%
+  summarise(default_rate = sum(default, na.rm = TRUE) / n())
+
+knitr::kable(default_rate_state)
+```
+
+The data is already in a good format but when using ```choroplethr``` we need to adhere to some conventions to make it work out of the box. The first thing would be to bring the state names into a standard format. In fact, we can investigate the format by looking e.g. into the ```choroplethrMaps::state.map``` dataset which we later use to map our data. We first load the library and then the data via the function ```utils::data()```. From the documentation, we also learn that state.map is a "data.frame which contains a map of all 50 US States plus the District of Columbia." It is based on a [shapefile](https://en.wikipedia.org/wiki/Shapefile) which is often used in geospatial visualizations and "taken from the US Census 2010 Cartographic Boundary shapefiles page". We are interested in the ```region``` variable which seems to hold the state names.
+
+```{r}
+library(choroplethrMaps)
+utils::data(state.map)
+str(state.map)
+unique(state.map$region)
+```
+
+So it seems we need small case long form state names which implies we need a mapping from the short names in our data. Some internet research may give us the site [American National Standards Institute (ANSI) Codes for States](https://www.census.gov/geo/reference/ansi_statetables.html) where we find a mapping under section ```FIPS Codes for the States and the District of Columbia```. We could try using some parsing tool to extract the table from the web page but for now we take a short cut and simply copy paste the data into a tab-delimited txt file and read the file with ```readr::read_tsv()```. We then cross-check if all abbreviations used in our loans data are present in the newly created mapping table.
+
+```{r}
+states <- readr::read_tsv("./data//us_states.txt")
+str(states)
+# give some better variable names (spaces never helpful)
+names(states) <- c("name", "fips_code", "usps_code")
+# see if all states are covered
+dplyr::setdiff(default_rate_state$addr_state, states$usps_code)
+```
+
+Comparing the unique abbreviations in the loans data with the usps codes reveals that we are all covered so let's bring the data together using ```dplyr::left_join()```. For details on dplyr join syntax, see [Two-table verbs](https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html).
+To go with the ```choroplethr``` conventions, we also need to
+
+* have state names in lower case
+* rename the mapping variable to ```region``` and the numeric metric to ```value```. 
+* only select above two variables in the function call
+
+Note that we are re-assigning the data to itself to avoid creating a new table.
+
+```{r}
+default_rate_state <-
+  default_rate_state %>%
+  left_join(states[, c("usps_code", "name")], 
+            by = c("addr_state" = "usps_code")) %>%
+  rename(region = name, value = default_rate) %>%
+  mutate(region = tolower(region)) %>%
+  select(region, value)
+```
+
+Finally, we can plot the data using the default colors from ```choroplethr```. As we are having data on state level, we use function ```choroplethr::state_choropleth()```.
+
+```{r}
+choroplethr::state_choropleth(df = default_rate_state, 
+                              title = "Default rate by State")
+```
+
+We can derive a few points from the plot: 
+
+* default rate varies across states
+* we may want to adjust the default binning
+* we are only looking at default rate but not defaulted exposure (there may be states with many defaults but the defaulted amount is small)
+
+We could do the same exercise but on a more granular level as we have zip codes available. They are truncated so we would have to find a way to work with them. They also have a high number of unique values so the map legend may be cramped if we were looking at all of US. 
+
+\pagebreak
+
+# Correlation
+
+Many models rely on the notion of correlation between independent and dependent variables so a natural exploratoy visualization would be a correlation plot or correlogram. One library offering this is ```corrplot``` with its main function ```corrplot::corrplot()```. The function takes as input the correlation matrix that can be produced with ```stats::cor()```. This of course is only defined for numeric, non-missing variables. In order to have a reasonable information density in the correlation matrix, we will kick out some variables with a missing value share of larger 50%.
+
+For a discussion on missing value treatment, see e.g. [Data Analysis Using Regression and Multilevel/Hierarchical Models - Chapter 25: Missing-data imputation](http://www.stat.columbia.edu/~gelman/arm/missing.pdf)
+
+Let's again build a numeric variable vector after all previous operations and look at correlations.
+
+```{r}
+num_vars <- 
+  train %>% 
+  sapply(is.numeric) %>% 
+  which() %>% 
+  names()
+
+meta_train <- funModeling::df_status(train, print_results = FALSE)
+
+meta_train %>%
+  select(variable, p_zeros, p_na, unique) %>%
+  filter_(~ variable %in% num_vars) %>%
+  knitr::kable()
+```
+
+Finally, we can produce a correlation plot. Dealing with missing values, using option ```use = "pairwise.complete.obs"``` in function ```stats::cor()``` is considered bad practice as it uses pair matching and correlations may not be comparable, see e.g. [Pairwise-complete correlation considered dangerous](http://bwlewis.github.io/covar/missing.html). Alternatively, we can use option ```use = complete.obs``` which only considers complete observations but may discard a lot of data. However, as we have looked into the meta information, after our wrangling the proportion of missing values for the numeric variables has dropped a lot so we should be fine.
+
+Once we have the correlation matrix, we can use the function ```corrplot::corrplot()``` from the ```corrplot``` library. It offers a number of different visualization options. For details, see [An Introduction to corrplot Package](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html).
+
+```{r fig.width = 14, fig.height = 15}
+library(corrplot)
+corrplot::corrplot(cor(train[, num_vars], use = "complete.obs"), 
+                   method = "pie", type = "upper")
+```
+
+We can derive a few things from the plot
+
+* overall correlation between variables seems low but there are a few highly correlated ones
+* some highly correlated variables may indicate very similar information, e.g. ```mths_since_last_delinq``` and ```mths_since_last_major_derog```
+* some variables are perfectly correlated and thus should be removed
+
+Rather than a visual inspection, an (automatic) inspection of correlations and removal of highly correlated features can be done via function ```caret::findCorrelation()``` with a defined ```cutoff``` parameter. If two variables have a high correlation, the function looks at the mean absolute correlation of each variable and removes the variable with the largest mean absolute correlation. Using ```exact = TRUE``` will cause the function to re-evaluate the average correlations at each step while ```exact = FALSE``` uses all the correlations regardless of whether they have been eliminated or not. The exact calculations will remove a smaller number of predictors but can be much slower when the problem dimensions are "big".
+
+```{r}
+caret::findCorrelation(cor(train[, num_vars], use = "complete.obs"), 
+                       names = TRUE, cutoff = .5)
+```
+
+Given above, we remove a few variables
+
+```{r}
+vars_to_remove <- 
+  c("loan_amnt", "funded_amnt", "funded_amnt_inv", "installment",
+    "total_pymnt_inv", "total_rec_prncp", "mths_since_last_delinq", 
+    "out_prncp", "total_pymnt", "total_rec_int", "total_acc",
+    "mths_since_last_record", "recoveries")
+
+train <- train %>% select(-one_of(vars_to_remove))
+```
+
+\pagebreak
+
+# Summary plots
+
+An alternative to producing individual exploratory plots is using summary plots that come with sensible default settings and display the data according to its data type (numeric or categorical). The advantages are that a lot of information can be put into one graph and potential relationships may be spotted more easily. The disadvantages are potential performance issues when plotting many variables of a large dataset and readability issues in case of many dimensions for categorical variables. These disadvantages can be somewhat remediated by looking at summary plots after a lot of variables have already been discarded due to other findings (as we have done here). To show the general idea, we use the ```GGally``` library which builds on top of ```ggplot2``` and provides some nice visualization functions. We choose a subset of variables for illustration of the ```GGally::ggpairs()``` function. Even with this subset the production of the graph may take some time depending on your hardware. For a theoretical background, see [The Generalized Pairs Plot](http://www.bricol.net/downloads/pubs/Emerson_et_al.2013.pdf). For the many customization options, see  [GGally](http://ggobi.github.io/ggally). As always when visualizing a lot of information, there is a trade-off between information density and visualization efficiency. The more variables are selected for the plot, the more difficult it becomes to efficiently visualize it. This needs some playing around or a really big screen.
+
+_Note_
+
+> Simply leaving the variable ```default``` as boolean would produce an error in ```ggpairs``` (or rather in ```ggplot2``` which it calls): ```Error: StatBin requires a continuous x variable the x variable is discrete. Perhaps you want stat="count"?```.  Besides, we like it to be treated as categorical so we convert it to character for this function call.
+
+```{r fig.height = 20, fig.width = 14, warning = FALSE, message = FALSE}
+library(GGally)
+plot_ggpairs <-
+  train %>%
+  select(annual_inc, term, grade, default) %>%
+  mutate(default = as.character(default)) %>%
+  ggpairs()
+
+plot_ggpairs
+```
+
+The resulting graph has a lot of information in it and we won't go into further detail here but the most important points to read the graph properly. 
+In the columns:
+
+* for single continuous numeric variable plots density estimate
+* for continuous numeric variable against another continuous numeric variable plots scatterplot
+* for continuous numeric variable against another categorical variable plots histogram
+* for single categorical variable plots histogram
+
+In the rows:
+
+* for continuous numeric variable against another continuous numeric variable plots correlation
+* for continuous numeric variable against another categorical variable plots boxplot by dimension of categorical variable
+* for categorical variable against another categorical variable plots historgram by dimension of y-axis categorical variable
+* for categorical variable against another continuous variable plots scatterplot by dimension of categorical variable
+
+Another interesting plot would be to visualize the density (estimates) of the numeric variables color-coded by the classes of the target variable (here: default/non-default) to inspect whether there are visual clues about differences in the distributions. We can achieve this by using ```ggplot``` but need to bring the data into a long format rather than its current wide format (see [Data Science with R - Chapter Data Tidying](http://garrettgman.github.io/tidying/) for details on reshaping). We use ```tidyr::gather()``` to bring the numeric variables into a long format and then add the target variable again. Note that there are different lengths of the reshaped data and the original target variable vector. As ```dplyr::mutate()``` will not properly take care of the recycling rules, we have to recycle (repeat) the variable ```default``` manually to have the same length as the reshaped train data. See [An Introduction to R - Chapter 2.2: Vector arithmetic](https://cran.r-project.org/doc/manuals/R-intro.pdf) how ```recycling``` works in general.
+
+> Vectors occurring in the same expression need not all be of the same length. If they are not, the value of the expression is a vector with the same length as the longest vector which occurs in the expression. Shorter vectors in the expression are recycled as often as need be (perhaps fractionally) until they match the length of the longest vector. In particular a constant is simply repeated.
+
+Note that we make use of a few plot parameters to make the visualization easier to follow.  We like ```default``` to be a factor so the densities are independent of class distribution. First, we switch the levels of variable ```default``` to have ```TRUE``` on top (as the highest objective is to get the true positive right). We use the ```fill``` and ```color``` parameters to encode with the target variable. This allows a visual distinction of overlaying densities. In addition, we set the ```alpha``` value to have the area under the curve transparently filled. For color selection we make use of ```brewer``` scales which offer a well selected pallette of colors. Finally, we split the plots by variable with ```facet_wrap``` allowing the scales of each indifidual plot to be ```free``` and defining the number of columns via ```ncol```.
+
+```{r fig.height = 20, fig.width = 14, warning = FALSE, message = FALSE}
+num_vars <- train %>% sapply(is.numeric) %>% which() %>% names()
+
+train %>%
+  select_(.dots = num_vars) %>%
+  gather(measure, value) %>%
+  mutate(default = factor(rep(x = train$default, 
+                              length.out = length(num_vars) * dim(train)[1]), 
+                          levels = c("TRUE", "FALSE"))) %>%
+  ggplot(data = ., aes(x = value, fill = default, 
+                       color = default, order = -default)) +
+  geom_density(alpha = 0.3, size = 0.5) +
+  scale_fill_brewer(palette = "Set1") +
+  scale_color_brewer(palette = "Set1") +
+  facet_wrap( ~ measure, scales = "free", ncol = 3)
+
+```
+
+We can derive a few things from the plot:
+
+* most of the densities are right-skewed with probably a few outliers extending the x-axis which makes discerning patterns in the area with highest mass difficult
+* even with above mentioned visualization impediment it seems that there is not a lot of difference between default and non-default loans for most variables
+* some densities seem wobbly for the majority class (e.g. ```open_acc```) which is caused by the fact that the smoothing algorithm has many more data points to smooth in between but the density follows the same general shape
+
+Given above observations, we can try to improve the plot by removing (adjusting) outliers. There are many different methods that can be used, see e.g.
+
+* [A Survey of Outlier Detection Methodologies](https://pdfs.semanticscholar.org/be78/b80341d0bda8bfce9a9c3b4a04953fe3a11d.pdf)
+* [On Evaluation of Outlier Rankings and Outlier Scores](http://www.dbs.ifi.lmu.de/~zimek/publications/SDM2012/SDM12-outlierevaluation.pdf)
+* [Outliers: An Evaluation of Methodologies](https://ww2.amstat.org/sections/srms/Proceedings/y2012/files/304068_72402.pdf)
+* [A protocol for data exploration to avoid common statistical problems](http://onlinelibrary.wiley.com/doi/10.1111/j.2041-210X.2009.00001.x/full)
+* [Outlier detection and treatment with R](https://datascienceplus.com/outlier-detection-and-treatment-with-r/)
+* [Data Mining and Knowledge Discovery Handbook - Chapter 1: Outlier Detection](http://www.eng.tau.ac.il/~bengal/outlier.pdf)
+
+Most of these methods focus on removing outliers for modeling which requires a lot of care and understanding how model characteristics change when removing / replacing outliers. In our case, we can be more pragmatic as we are only interested in improving our understanding of the mass of the distribution in a graphical way to see if there are easily discernible pattern differences between the two outcomes of our target variable. For this, we like to replace outliers with some sensible value derived from the distribution of the particular variable. One could use the interquartile range as it is used in boxplots. We will use [winsorization](https://en.wikipedia.org/wiki/Winsorizing), i.e. replacing outliers with a specified percentile, e.g. 95%. As this is a fairly simple task, we write our own function to do that. Alternatively, one may use e.g. function ```psych::winsor()``` which trims outliers from both ends of the distribution. Since we have already seen, that there is no negative value present, we only cut from the right side of the distribution. We call the function ```winsor_outlier``` and allow settings for the percentile and removing NA values. The design is inspired by an SO question [How to replace outliers with the 5th and 95th percentile values in R](https://stackoverflow.com/questions/13339685/how-to-replace-outliers-with-the-5th-and-95th-percentile-values-in-r).
+
+```{r fig.height = 20, fig.width = 14, warning = FALSE, message = FALSE}
+winsor_outlier <- function(x, cutoff = .95, na.rm = FALSE){
+    quantiles <- quantile(x, cutoff, na.rm = na.rm)
+    x[x > quantiles] <- quantiles
+    x
+    }
+
+train %>%
+  select_(.dots = num_vars) %>%
+  mutate_all(.funs = winsor_outlier, cutoff = .95, na.rm = TRUE) %>%
+  gather(measure, value) %>%
+  mutate(default = factor(rep(x = train$default, 
+                              length.out = length(num_vars)*dim(train)[1]), 
+                          levels = c("TRUE", "FALSE"))) %>%
+  ggplot(data = ., aes(x = value, fill = default, 
+                       color = default, order = -default)) +
+  geom_density(alpha = 0.3, size = 0.5) +
+  scale_fill_brewer(palette = "Set1") +
+  scale_color_brewer(palette = "Set1") +
+  facet_wrap( ~ measure, scales = "free", ncol = 3)
+```
+
+We can derive a few things from the plot:
+
+* most densities don't show a discernible difference between default and non-default
+* ignore the densities centered around zero as they stem from too few observations
+* some densities show a bump on the right stemming from the outlier replacement and thus indicating that there is actually data in the tail
+
+Interestingly, variable ```out_prncp_inv``` shows a significant bump around zero for ```default == FALSE``` which can be confirmed via a count. However, the description tells us that this variable represents ```Remaining outstanding principal for portion of total amount funded by investors``` so it's unclear how useful it is (especially when knowing that this variable will only be available after a loan has been granted).
+
+```{r}
+train %>% 
+  select(default, out_prncp_inv) %>% 
+  filter(out_prncp_inv == 0) %>%
+  group_by(default) %>% 
+  summarize(n = n())
+```
+
+Overall, it seems from visual inspection that the numeric variables do not contain a lot of information gain regarding the classification of the target variable. One obvious exception is the interest rate which is a function of the expected risk of the borrower probably mostly driven by the rating. Here we see that defaulted clients tend to have higher interest rates and also seem to have more outliers in the tail.
+
+__A side note on plotting__
+
+If your screen is too small, you can export any plot to e.g. svg or pdf using graphics devices of the cairo API in package ```grDevices``` (usually part of base R distro) and scale the plot size to something bigger (especially helpful if it's a long plot). Here we show an example for the previously created ```ggpairs``` plot stored as pdf.
+
+```{r eval=FALSE}
+cairo_pdf(filename = paste0(path, "/plot_ggpairs.pdf"),
+    width=15,
+    height=20,
+    pointsize=10)
+plot_ggpairs
+dev.off()
+```
+
+\pagebreak
+
+# Modeling
+
+## Model options
+
+There are a couple of different model options available for a supervised binary classification problem such as determining whether a loan will default or not. In general, we may distinguish the following model approaches (among others):
+
+* logistic regression
+* linear discriminant analysis
+* k-nearest neighbors (kNN)
+* trees
+* random forests
+* boosting
+* support vector machines (SVM)
+
+In addition, there are multiple ways to assess model performance such as model parameters, cross-validation, bootstrap and multiple feature selection methods such as ridge regression, the lasso, principal component anaylsis, etc.
+
+We will look at some of those models and methods and see how they compare. For a more detailed treatment and further background, an accessible text is ["An Introduction to Statistical Learning"](http://www-bcf.usc.edu/~gareth/ISL/) or for a more advanced treatment ["The Elements of Statistical Learning: Data Mining, Inference, and Prediction"](http://statweb.stanford.edu/~tibs/ElemStatLearn/).
+
+## Imbalanced data
+
+Before we can think about any modeling, we have to realize that the dataset is highly imbalanced, i.e. the target variable has a very low proportion of defaults (namely `r sum(train$default == 1) / nrow(train)`). This can lead to several issues in many algorithms, e.g.
+
+* biased accuracy
+* loss functions attempt to optimize quantities such as error rate, not taking the data distribution into consideration
+* errors have the same cost (not pertaining to imbalanced data only)
+
+More details can be found in 
+
+* [Learning from Imbalanced Classes](https://svds.com/learning-imbalanced-classes/) 
+* [Practical Guide to deal with Imbalanced Classification Problems in R](https://www.analyticsvidhya.com/blog/2016/03/practical-guide-deal-imbalanced-classification-problems/)
+* [The caret package: Subsampling For Class Imbalances](https://topepo.github.io/caret/subsampling-for-class-imbalances.html)
+
+There are a couple of approaches to deal with the problem which can be divided into (taken from [Learning from Imbalanced Classes](https://svds.com/learning-imbalanced-classes/))
+
+* do nothing (not a good idea in general)
+* balance training set
+    + oversample minority class
+    + undersample majority class
+    + synthesize new minority classes
+* throw away minority examples and switch to an anomaly detection framework
+* at the algorithm level, or after it:
+    + adjust the class weight (misclassification costs)
+    + adjust the decision threshold
+    + modify an existing algorithm to be more sensitive to rare classes
+* construct an entirely new algorithm to perform well on imbalanced data
+
+We will focus on balancing the training set. There are basically three options available
+
+* undersample majority class (randomly or informed)
+* oversample minority class (randomly or informed)
+* do a mixture of both (e.g. SMOTE or ROSE method)
+
+Undersampling the majority class may lose information but via decreasing dataset also lead to more computational efficiency. We also tried SMOTE and ROSE but functions ```DMwR::SMOTE()``` and ```ROSE::ROSE()``` seem to be very picky about their input and so far we failed to run them. For details on SMOTE, see [SMOTE: Synthetic Minority Over-sampling Technique](https://www.jair.org/media/953/live-953-2037-jair.pdf) and for details on ROSE, see [ROSE: A Package for Binary Imbalanced Learning](https://journal.r-project.org/archive/2014-1/menardi-lunardon-torelli.pdf). As pointed out [here](https://shiring.github.io/machine_learning/2017/04/02/unbalanced) a random sampling for either under- or oversampling is not the best idea. It is recommended to use cross-validation and perform over- or under-sampling on each fold independently to get an honest estimate of model performance. In fact, function ```caret::train()``` also allows the re-balancing of data during the training of a model via ```caret::trainControl(sampling = "...")```, see [The caret package 11.2: Subsampling During Resampling](https://topepo.github.io/caret/subsampling-for-class-imbalances.html) for details. For now, we go with undersampling which still leaves a fair amount of training observations (at least for non-deep learning approaches).
+
+```{r}
+train_down <- 
+  caret::downSample(x = train[, !(names(train) %in% c("default"))], 
+                    y = as.factor(train$default), yname = "default")
+
+base::prop.table(table(train_down$default))
+base::table(train_down$default)
+```
+
+## A note on modeling libraries
+
+There are many modeling libraries in R (in fact it is one of the major reasons for its popularity) and they can be very roughly distinguished into
+
+* general modeling libraries comprising many different model functions (sometimes wrappers around specialized model libraries)
+* specialized modeling libraries focusing on only one or a certain class of models
+
+We will be using general modeling libraries and in particular the (standard) library shipping with R [stats](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/00Index.html) and a popular library [caret](http://topepo.github.io/caret/index.html). Another library often used is [rms](https://cran.r-project.org/web/packages/rms/index.html). The advantage of the general libraries is their easier access via a common API, usually a fairly comprehensive documentation and a relatively large user base which means high chance that someone already did what you like to do.
+
+### A note on caret library in particular
+
+The  caret  package (short for _C_lassification _A_nd _RE_gression _T_raining) is a set of functions that attempt to streamline the process for creating predictive models. The package contains tools for:
+
+* data splitting
+* pre-processing
+* feature selection
+* model tuning using resampling
+* variable importance estimation
+
+as well as other functionality. It aims at providing a uniform interface to R modeling functions themselves, as well as a way to standardize common tasks (such as parameter tuning and variable importance). The [documentation](https://topepo.github.io/caret/train-models-by-tag.html) gives an overview of the models that can be used via the ```caret::train()``` function which is the workhorse for building models. A quick look at available models reveals that there is a lot of choice.
+
+```{r}
+names(caret::getModelInfo())
+```
+
+## Data preparation for modeling
+
+A number of models require data preparation in advance so here we are going to perform some pre-processing so that all models can work with the data. Note that a few model functions also allow the pre-processing during the training step (e.g. scale and center) but it is computationally more efficient to do at least some pre-processing before.
+
+### Proper names for character variables
+
+Some models require a particular naming scheme for the values of character variables (e.g. no spcaes). The ```base::make.names()``` function does just that.
+
+```{r}
+vars_to_mutate <-
+  train_down %>%
+  select(which(sapply(.,is.character))) %>%
+  names()
+
+vars_to_mutate
+
+train_down <-
+  train_down %>%
+  mutate_at(.funs = make.names, .vars = vars_to_mutate)
+  
+test <-
+  test %>%
+  mutate_at(.funs = make.names, .vars = vars_to_mutate)
+```
+
+### Dummy variables
+
+A few models automatically convert character/factor variables into binary dummy variables (e.g. ```stats::glm()```) while others don't. To build a common ground, we can create dummy variables ahead of modeling. The ```caret::dummyVars()``` function creates a full set of dummy variables (i.e. less than full rank parameterization). The function takes a formula and a data set and outputs an object that can be used to create the dummy variables using the predict method. Let's also remove the zip code variable as it would create a huge binary dummy matrix and potentially lead to computational problems. In many cases it is anyway not allowed to use it for modeling as it may be discriminative against certain communities. We also adjust the test set as we will need it for evaluation. We throw away all variables that are not part of the training set as they are not used by the models and would only clutter memory. We keep the dummy data separate from the original training data as any model using explicit variable names (i.e. not the full set) would require us to list each dummy variable separately which is cumbersome. If the data was big, we may have chosen to keep it all in one data set. For more details, see [The caret package 3.1: Creating Dummy Variables](https://topepo.github.io/caret/pre-processing.html#dummy).
+
+```{r}
+vars_to_remove <- c("zip_code")
+train_down <- train_down %>% select(-one_of(vars_to_remove))
+
+# train
+dummies_train <-
+  dummyVars("~.", data = train_down[, !(names(train_down) %in% c("default"))], 
+            fullRank = FALSE)
+
+train_down_dummy <-
+  train_down %>%
+  select(-which(sapply(.,is.character))) %>%
+  cbind(predict(dummies_train, newdata = train_down))
+
+# test
+dummies_test <-
+  dummyVars("~.", data = test[, dummies_train$vars], fullRank = FALSE)
+
+test_dummy <-
+  test %>%
+  select(one_of(colnames(train_down))) %>%
+  select(-which(sapply(.,is.character))) %>%
+  cbind(predict(dummies_test, newdata = test))
+```
+
+\pagebreak
+
+## Logistic regression
+
+While linear regression is very often used for (continuous) quantitative variables, logistic regression is its counterpart for (discrete) qualitative responses also referred to as categorical. Rather than modeling the outcome
+directly as default or not, logistic regression models the probability that the response belongs to a particular category. The logistic function will ensure that probabilties are within the range [0, 1]. The model coefficients are estimated via the maximum likelihood method.
+
+The logistic regression model is part of the larger family of generalized linear model function and implemented in many R packages. We will use the  ```stats::glm()``` function that usually comes with the standard install. A strong contender for any regression modeling is the ```caret``` package that we have already used before and will use again.
+
+We will start with a very simple model of one explanatory variable, namely ```grade```, which intuitively should be a good predictor of default as it is a credit rating and therefore an evaluation of the borrower. Note that a call to ```stats::glm()``` will not return all model statistics by default but only some attributes of the created model object. We can inspect the object's attributes with the ```base::attributes()``` function. The function ```base::summary()``` is a generic function used to produce result summaries of the results of various model fitting functions. The function invokes particular methods which depend on the class of the first argument. In the case of a ```glm``` object, it will return model statistics such as 
+
+* deviance residuals
+* coefficients
+* standard error
+* z statistic
+* p-value
+* AIC
+
+and some more. We may also use the ```summary``` function on selected model objects, e.g. the coefficients only via ```summary(model_object)$coef```.
+
+Finally, before running the model, the documentation of ```stats::glm()``` tells us that if the response is of type ```factor``` the first level denotes failure and all others success. We can check and find that this is already the case here.
+
+```{r}
+levels(train_down$default)
+
+model_glm_1 <- glm(formula = default ~ grade, 
+                   family = binomial(link = "logit"), 
+                   data = train_down, na.action = na.exclude)
+class(model_glm_1)
+attributes(model_glm_1)
+summary(model_glm_1)
+summary(model_glm_1)$coef
+```
+
+There are a couple of functions that work natively with lm / glm objects created via ```stats::glm()``` (taken from [Steph Locke: Logistic Regressions](http://stephlocke.info/Rtraining/logisticregressions.html#)):
+
+* coefficients: Extract coefficients 
+* summary: Output a basic summary 
+* fitted: Return the predicted values for the training data 
+* predict: Predict some values for new data 
+* plot: Produce some basic diagnostic plots 
+* residuals: Return the errors on predicted values for the training data 
+
+Also note that categorical variables will get transformed into dummy variables. A standardization is not necessarily needed, see e.g. [Is standardization needed before fitting logistic regression](https://stats.stackexchange.com/questions/48360/is-standardization-needed-before-fitting-logistic-regression). There are a number of model diagnostics one may perform, see e.g. [Diagnostics for logistic regression](https://stats.stackexchange.com/questions/45050/diagnostics-for-logistic-regression) and pay attention to ```Frank Harrell```'s answer.
+
+## Model evaluation illustration
+
+For the sake of illustration, let's go once through the model evaluation steps for this very simple model. This workflow should be similar even when the model gets more complex.
+There are many perspectives one can take when evaluating a model and many packages that provide helper functions to do so. For this illustration, we focus on a fairly standard approach looking at some statistics and explaining them along the way. We will also be plotting an ROC curve to establish its basic functioning.
+
+To evaluate the model performance, we have to use the fitted model to predict the target variable ```default``` on unseen (test) data. The function ```stats::preditc.glm()``` does exactly that. We set ```type = "response"``` which returns the predicted probabilities and thus allows us to evaluate against a chosen threshold. This can be useful in cases where the cost of missclassification is not equal and one outcome should be penalized heavier than another. Also note, that we choose the positive outcome to be ```TRUE```, i.e. a true positive would be correctly identifiying a default. We use the function ```caret::ConfusionMatrix()``` to plot a confusion matrix (also called error matrix). The function also returns a number of model statistics (however note that the test data is highly imbalanced as we have not applied any resampling as in the training data - so a number of statistics are meaningless). Here is what the function reports:
+
+* Accuracy: (TP + TN) / (TP + FP + TN + FN)
+* 95% CI: 95% confidence interval for accuracy
+* No Information Rate: accuracy in case of random guessing (in case of binary outcome the proportion of the majority class)
+* P-Value [Acc > NIR]: p-value that accuracy is larger No Information Rate
+* Kappa: (observed accuracy - expected accuracy) / (1 - expected accuracy), see [Cohen's kappa in plain English](https://stats.stackexchange.com/questions/82162/cohens-kappa-in-plain-english)
+* Mcnemar's Test P-Value
+* Sensitivity / recall: true positive rate = TP / (TP + FN)
+* Specificity: true negative rate = TN / (TN + FP)
+* Pos Pred Value: (sensitivity * prevalence) / ((sensitivity * prevalence) + ((1 - specificity) * (1 - prevalence)))
+* Neg Pred Value: (specificity * (1-prevalence)) / (((1-sensitivity) * prevalence) + ((specificity) * (1 - prevalence)))
+* Prevalence: (TP + FN) / (TP + FP + TN + FN)
+* Detection Rate: TP / (TP + FP + TN + FN)
+* Detection Prevalence: (TP + FP) / (TP + FP + TN + FN)
+* Balanced Accuracy: (sensitivity + specificity) / 2
+
+```{r}
+model_glm_1_pred <- 
+  predict.glm(object = model_glm_1, newdata = test, type = "response")
+model_pred_t <- function(pred, t) ifelse(pred > t, TRUE, FALSE)
+caret::confusionMatrix(data = model_pred_t(model_glm_1_pred, 0.5), 
+                       reference = test$default,
+                       positive = "TRUE")
+```
+
+Looking at the model statistics, we find a mixed picture:
+
+* we get a fair amount of true defaults right (sensitivity)
+* we get a large amount of non-defaults wrong (specificity)
+* the Kappa (which should consider class distributions) is very low
+
+We can visualize the classification (predicted probabilities) versus the actual class for the test set and the given threshold. We make use of a plotting function inspired by [Illustrated Guide to ROC and AUC](https://www.joyofdata.de/blog/illustrated-guide-to-roc-and-auc/) with its source code residing on [Github](https://github.com/joyofdata/joyofdata-articles/blob/master/roc-auc/plot_pred_type_distribution.R). We have slightly adjusted the code to fit our needs.
+
+```{r}
+plot_pred_type_distribution <- function(df, threshold) {
+  v <- rep(NA, nrow(df))
+  v <- ifelse(df$pred >= threshold & df$actual == 1, "TP", v)
+  v <- ifelse(df$pred >= threshold & df$actual == 0, "FP", v)
+  v <- ifelse(df$pred < threshold & df$actual == 1, "FN", v)
+  v <- ifelse(df$pred < threshold & df$actual == 0, "TN", v)
+  
+  df$pred_type <- v
+  
+  ggplot(data = df, aes(x = actual, y = pred)) + 
+    geom_violin(fill = rgb(1, 1 ,1, alpha = 0.6), color = NA) + 
+    geom_jitter(aes(color = pred_type), alpha = 0.6) +
+    geom_hline(yintercept = threshold, color = "red", alpha = 0.6) +
+    scale_color_discrete(name = "type") +
+    labs(title = sprintf("Threshold at %.2f", threshold))
+  }
+
+plot_pred_type_distribution(
+  df = tibble::tibble(pred = model_glm_1_pred, actual = test$default), 
+  threshold = 0.5)
+```
+
+We can derive a few things from the plot:
+
+* We can clearly see the imbalance of the test dataset with many more observations being ```FALSE```, i.e. non-defaulted
+* We can see that predictions tend to cluster more around the center (i.e. the threshold) rather than the top or bottom
+* We see that there are only seven distinct (unique) prediction probabilities, namely `r unique(model_glm_1_pred)` which corresponds to the number of unique levels in our predictor ```grade```, namely `r unique(train$grade)`
+* We can see the trade-off of moving the threshold down or up leading to higher sensitivity (lower specificity) or higher specificity (lower sensitivity), respectively.
+
+### ROC curve
+
+Let's have a look at the ROC curve which evaluates the performance over all possible thresholds rather than just one. Without going into too much detail, the ROC curve works as follows:
+
+* draw sensitivity (true positive rate) on y-axis
+* draw specificivity (true negative rate) on x-axis (often also drawn as 1 - true negative rate)
+* go from threshold zero to threshold one in a number of pre-defined steps, e.g. with distance 0.01
+* for each threshold sensitivity is plotted against specificity
+* the result is usually a (smoothed) curve that lies above the diagonal splitting the area 
+* the diagonal (also called base) represents the lower bound as it is the result of a random guess (assuming balanced class distribution) - so if the curve lies below it, the model is worse than random guessing and one could simply invert the prediction
+* in a perfect model the curve touches the upper left data point, i.e. having a sensitivity and specificity of one (perfect separation)
+* This setup nicely illustrates the trade-off between sensitivity and specificity as it often occurs in reality, i.e. increasing one, decreases the other
+* The curve also allows comparing different models against each other
+
+Although the curve gives a good indication of model performance, it is usually preferrable to have one model statistic to use as benchmark. This is the role of the AUC (AUROC) known as area under the curve (area under the ROC curve). It is simply calculated via integration. Naturally, the base is 0.5 (the diagonal) and thus the lower bound. The upper bound is therefore 1.
+
+More details can be found e.g. in:
+
+* [ROC curves to evaluate binary classification algorithms](http://corysimon.github.io/articles/what-is-an-roc-curve/)
+* [Illustrated Guide to ROC and AUC](http://www.joyofdata.de/blog/illustrated-guide-to-roc-and-auc/) 
+* or for a more theoretical treatment [An introduction to ROC analysis](https://ccrma.stanford.edu/workshops/mir2009/references/ROCintro.pdf).
+
+We will be using the ```pROC``` library and its main function ```pROC::roc()``` to compute ROC. 
+
+```{r}
+roc_glm_1 <- pROC::roc(response = test$default, predictor = model_glm_1_pred)
+roc_glm_1
+```
+
+We see an area of `r roc_glm_1$auc` which is better than random guessing but not too good. Let's plot it to see its shape. Note that by default ```pROC::plot.roc()``` has the x-axis as specificity rather than 1 - specificity as many authors and other packages have. To use 1 - specificity, one can call the function with parameter ```legacy.axes = TRUE```. However, it seems that the actual trade-off between sensitivity and specificity is easier to see when plotting specificity as the mind does not easily interpret one minus some quantity. We also set ```asp = NA``` to create an x-axis range from zero to one which, depending on your graphics output settings, ensures the standard way of plotting an ROC curve accepting the risk of a misshape in case graphics output does not have (close to) quadratic shape.
+
+```{r}
+pROC::plot.roc(x = roc_glm_1, legacy.axes = FALSE, xlim = c(1, 0), asp = NA,
+               col = "green", print.auc = FALSE, print.auc.y = .4)
+
+legend(x = "bottomright", legend=c("glm_1 AUC = 0.664"), 
+       col = c("green"), lty = 1, cex = 1.0)
+```
+
+We see that the curve lies over the diagonal but it does not have a strong tendency to touch the upper left corner. A more complex model may perform better but would involve a larger amount of predictors so naturally the question of variable selection will come up.
+
+## Variable selection
+
+Many articles and book chapters have been written on the topic of variable selection (feature selection) and some authors believe it is one of, if not the most, important topic in model buidling. A few good resources giving an overview, can be found below:
+
+* [An Introduction to Statistical Learning - Chapter 6: Linear Model Selection and Regularization](http://www-bcf.usc.edu/~gareth/ISL/)
+* [An Introduction to Variable and Feature Selection](http://www.jmlr.org/papers/volume3/guyon03a/guyon03a.pdf)
+* [Variable selection methods in regression: Ignorable problem, outing notable solution](https://link.springer.com/article/10.1057%2Fjt.2009.26)
+
+The different approaches can be categorized as follows:
+
+* subset selection
+  + best subset selection
+  + stepwise selection (forward/backward/hybrid)
+* shrinkage
+  + ridge regression (l~2~-norm)
+  + lasso (l~1~-norm)
+* dimension reduction
+  + principal component analysis (PCA)
+
+There are many trade-offs to be made when choosing one approach over the other but the two most important are statistical soundness and computational efficiency. We will not go into further details of variable selection but rather focus on the model building. We thus simply detrmine a predictor space that seems sensible given prior analysis.
+
+Let's remind ourselves of variables left for modeling.
+
+```{r}
+full_vars <- colnames(train_down)
+full_vars
+```
+
+We determine a subspace and report which variables we ignore.
+
+```{r}
+model_vars <-
+  c("term", "grade", "emp_length", "home_ownership", "annual_inc",
+    "purpose", "pymnt_plan", "out_prncp_inv", "delinq_2yrs", "default")
+
+ignored_vars <- dplyr::setdiff(full_vars, model_vars)
+ignored_vars
+```
+
+## A more complex logistic model with caret
+
+The interested reader should check the comprehensive caret documentation on how the API works and for modeling in particular read [model training and tuning](https://topepo.github.io/caret/model-training-and-tuning.html). We only give a high-level overview here.
+
+The  ```caret```  package has several functions that attempt to streamline the model building and evaluation process. The train function can be used to
+
+* evaluate, using resampling, the effect of model tuning parameters on performance
+* choose the "optimal" model across these parameters
+* estimate model performance from a training set
+
+First, a specific model must be chosen. User-defined models can also be created. Second, the corresponding model parameters need to be passed to the function call. The workhorse function is ```caret::train()``` but an important input is parameter ```trControl``` which also allows specifying a particular resampling approach, e.g. k-fold cross-validation (once or repeated), leave-one-out cross-validation and bootstrap (simple estimation or the 632 rule), etc. 
+
+### trainControl
+
+We will define the controlling parameters in a separate function call to ```caret::trainControl()``` and then pass this on to ```caret::train(trControl = )```. This also allows using the control parameters for different models if applicable to those. The function ```caret::trainControl()``` generates parameters that further control how models are created. For more details, see [The caret package 5.5.4: The trainControl Function](https://topepo.github.io/caret/model-training-and-tuning.html).
+
+We perform a 10-fold cross-validation repeated five times and return the class probabilities. Since we are interested in ROC as our performance measure, we need to set ```summaryFunction = twoClassSummary```. If one likes to see a live log of the execution, ```verboseIter = TRUE``` provides that. Since we have no tuning parameters for logistic regression, we leave those out for now.
+
+```{r}
+ctrl <- 
+  trainControl(method = "repeatedcv", 
+               number = 10,
+               repeats = 5,
+               classProbs = TRUE,
+               summaryFunction = twoClassSummary,
+               savePredictions = TRUE,
+               verboseIter = FALSE)
+```
+
+### train
+
+Finally, we can call ```caret::train()``` with specified control parameters. Note that ```caret``` is picky about factor values which need to be valid R names. We thus convert the default variable to have values "yes" and "no" rather than "TRUE" and "FALSE" (which when converted to variable names would not be valid as they are reserved keywords). Make sure that the test set is transformed likewise when using the model for prediction as otherwise your factor levels may be different to the training set and the class probabilities thus wrong.
+
+We will skip the complex discussion around variable selection for now and simply determine the "base" variable universe that seems plausible from intuition and prior exploratory analysis. We have removed categorical variables with many unique values (such as zip codes) as they would be mutated to large dummy matrices.
+
+```{r}
+model_glm_2 <-
+  train_down %>%
+  select(model_vars) %>%
+  mutate(default = as.factor(ifelse(default == TRUE, "yes", "no"))) %>%
+  filter(complete.cases(.)) %>%
+  train(default ~ ., 
+        data = ., 
+        method = "glm", 
+        family = "binomial",
+        metric = "ROC",
+        trControl = ctrl)
+```
+
+As with the previous model object created via ```stats::glm()```, the final model object created has many methods and attributes for further processing. But we first look at the results/performance on the training set (which should give a fair estimate of the test set performance since we used cross-validation). Note that all reported metrics are interpretable since this is done on the balanced data.
+
+```{r}
+model_glm_2
+```
+
+We can see that we have improved on the ROCAUC (~ 70%) but got worse for sensitivity compared to the first, simpler model. Looking at the ```predictors```, we also see how the model created dummies to encode categorical variables.
+
+```{r}
+attributes(model_glm_2)
+summary(model_glm_2)
+predictors(model_glm_2)
+```
+
+We can also look at the variable importance with ```caret::varImp()```. For linear models, the absolute value of the t-statistic for each model parameter is used.
+
+```{r}
+varImp(model_glm_2)
+plot(varImp(model_glm_2))
+```
+
+Finally, we use the model to predict the test set classes. Again, we need to be aware of any pre-processing required such as mutations or treatment of missing values.
+
+```{r}
+model_glm_2_pred <- 
+  predict(model_glm_2, 
+          newdata = test %>% 
+            select(model_vars) %>%
+            mutate(default = as.factor(ifelse(default == TRUE, 
+                                              "yes", "no"))) %>%
+            filter(complete.cases(.)), 
+          type = "prob")
+
+head(model_glm_2_pred, 3)
+```
+
+Note that ```caret::predict.train``` returns the probabilties for all outcomes i.e. in our binary case for yes and no. We repeat the analysis from earlier and see how the new model performs.
+
+```{r}
+caret::confusionMatrix(
+  data = ifelse(model_glm_2_pred[, "yes"] > 0.5, "yes", "no"), 
+  reference = as.factor(ifelse(test[complete.cases(test[, model_vars]), 
+                                    "default"] == TRUE, "yes", "no")),
+  positive = "yes")
+```
+
+Again we build an ROC object.
+
+```{r}
+temp <- as.factor(ifelse(test[complete.cases(test[, model_vars]),
+                                             "default"] == TRUE, "yes", "no"))
+
+roc_glm_2 <- 
+  pROC::roc(response = temp, 
+            predictor = model_glm_2_pred[, "yes"])
+
+roc_glm_2
+
+#data = as.data.frame(unclass(train[complete.cases(train), ]))
+```
+
+The ROCAUC of ~ 70% is nearly the same as for the cross-validated training set. We plot the curve comparing it against the ROC from the simple model.
+
+```{r}
+pROC::plot.roc(x = roc_glm_1, legacy.axes = FALSE, xlim = c(1, 0), asp = NA, 
+               col = "green")
+
+pROC::plot.roc(x = roc_glm_2, legacy.axes = FALSE, xlim = c(1, 0), asp = NA,
+               add = TRUE, col = "blue")
+
+legend(x = "bottomright", legend=c("glm_1 AUC = 0.664", "glm_2 AUC = 0.7"), 
+       col = c("green", "blue"), lty = 1, cex = 1.0)
+```
+
+We can see that the more complex model has a better ROC above the simple model.
+
+## A note on computational efficiency (parallelization via cluster)
+
+Some models (and their tuning parameter calibration via resampling) will require significant computational resources both in terms of memory and CPUs. There are a few ways to increase computational efficiency which can be roughly divided into
+
+* decrease training set (without loosing information)
+* compute on several cores (parallelization via cluster)
+* shift matrix computations to GPU (e.g. via CUDA)
+* use compute instances from cloud offerings such as Amazon Web Services, googleCloud or Microsoft Azure
+
+We will only look at parallelization here as it is supported by R and ```caret``` out of the box. For details, see [The caret package 9: Parallel Processing](https://topepo.github.io/caret/parallel-processing.html), [caret ml parallel](https://github.com/tobigithub/caret-machine-learning/wiki/caret-ml-parallel) and [HOME of the R parallel WIKI!](https://github.com/tobigithub/R-parallel/wiki) by Tobias Kind. There are a couple of libraries supporting parallel processing in R but one should be aware of the support for different operating systems. On Windows, one should use [doParallel](https://cran.r-project.org/web/packages/doParallel) which is a parallel backend for the ```foreach``` package. Note that the multicore functionality only runs tasks on a single computer, not a cluster of computers. However, you can use the snow functionality to execute on a cluster, using Unix-like operating systems, Windows, or even a combination. It is pointless to use doParallel and parallel on a machine with only one processor with a single core. To get a speed improvement, it must run on a machine with multiple processors, multiple cores, or both. Remember: unless ```doParallel::registerDoParallel()``` is called, ```foreach``` will not run in parallel. Simply loading the ```doParallel``` package is not enough. Note that we can set the parameter ```caret::trainControl(allowParallel = TRUE)``` but it is actually the default setting, i.e. ```caret::train()``` will automatically run in parallel if it detects a registerd cluster, irrespective of library is used to build it.
+
+To illustrate efficiency gains, we will benchmark an example model training using the previous ```glm``` model. We use library (and function with same name) ```microbenchmark``` and define to execute the operation several times (to get a stable time estimate) via parameter ```times```. Note that parallizing usually means creating copies of the original data for each worker (core) which requires according memory. Since we only want to illustrate the logic here, we downsize the training data to avoid failures due to insufficient memory.
+
+```{r}
+benchmark_train_data <- 
+  train_down[seq(1, nrow(train_down), 2), model_vars] %>%
+  mutate(default = as.factor(ifelse(default == TRUE, "yes", "no"))) %>%
+  filter(complete.cases(.))
+format(utils::object.size(benchmark_train_data), units = "Mb")
+```
+
+We see the data has ~ 1 Mb in size.
+
+```{r}
+ctrl <- 
+  trainControl(method = "repeatedcv", 
+               number = 10,
+               repeats = 5,
+               classProbs = TRUE,
+               summaryFunction = twoClassSummary,
+               verboseIter = FALSE,
+               allowParallel = TRUE) #default
+
+library(microbenchmark)
+
+glm_nopar <-
+  microbenchmark(glm_nopar =
+      train(default ~ .,
+            data = benchmark_train_data,
+            method = "glm",
+            family = "binomial",
+            metric = "ROC",
+            trControl = ctrl),
+    times = 5
+    )
+```
+
+We can look at the resulting run time.
+
+```{r}
+glm_nopar
+```
+
+Now, we will setup a cluster of cores and repeat the benchmarking. We use ```parallel::detectCores()``` to establish how many cores are available and use some amount smaller 100% of cores to leave some resources for the system. Usually, we would write a log of the distributed calculation via ```parallel::makeCluster(outfile = )```. It will be opened in append mode as all workers write to it. However, we found issues with running ```parallel::makeCluster(outfile = )``` so we simply run the cluster directly from ```registerDoParallel()``` which has no option to define a log file.
+
+```{r}
+# doParallel would also load parallel
+library(parallel)
+library(doParallel)
+cores_2_use <- floor(0.8 * detectCores())
+# cl <- makeCluster(cores_2_use, outfile = "./logs/parallel_log.txt")
+# registerDoParallel(cl, cores_2_use)
+registerDoParallel(cores = cores_2_use)
+getDoParWorkers()
+```
+
+We can inspect the open connections via ```base::showConnections()```.
+
+```{r}
+knitr::kable(base::showConnections())
+```
+
+Now we tried running in parallel but the setup may produce an error on Windows.
+
+```Error in e$fun(obj, substitute(ex), parent.frame(), e$data) : unable to find variable "optimismBoot"```
+
+This seems to be a bug as noted in SO question [Caret train function - unable to find variable “optimismBoot”](https://stackoverflow.com/questions/46244763/caret-train-function-unable-to-find-variable-optimismboot). The bug seems to be solved in ```caret``` development version which can be installed from GitHub via ```devtools::install_github('topepo/caret/pkg/caret')``` (note that building ```caret``` from source requires ```RBuildTools``` which are part of ```RTools``` which need to be installed separately, e.g. from [Building R for Windows](https://cran.rstudio.com/bin/windows/Rtools) - RStudio may manage the install for you). The issue is also tracked on GitHub under [optimismBoot error #706](https://github.com/topepo/caret/issues/706) and may already be resolved in the ```caret``` version you are using.
+
+We do not run the install of the development version here again but you should in case you do not have it and wish to test the parallel execution. Before you do, make sure to close the cluster with below code (not executed now as we continue).
+
+```{r eval=FALSE}
+parallel::stopCluster(cl)
+foreach::registerDoSEQ()
+```
+
+```{r}
+glm_par <-
+  microbenchmark(glm_par =
+    train(default ~ .,
+            data = benchmark_train_data,
+            method = "glm",
+            family = "binomial",
+            metric = "ROC",
+            trControl = ctrl),
+    times = 5
+    )
+```
+
+We make sure to stop the cluster and force R back to sequential execution by using ```foreach::registerDoSEQ()```. In case you used the setup via ```parallel::makeCluster()```, you need to call ```parallel::stopCluster()``` first. Otherwise, memory and CPU may be occupied with legacy clusters.
+
+```{r}
+#parallel::stopCluster(cl)
+foreach::registerDoSEQ()
+```
+
+Note that we ran into issues when using too much system resources on a Windows 7 workstation as documented in the SO question [caret train binary glm fails on parallel cluster via doParallel](https://stackoverflow.com/questions/46119014/caret-train-binary-glm-fails-on-parallel-cluster-via-doparallel/46119519?noredirect=1#comment79203772_46119519). Below error was produced.
+
+```Error in serialize(data, node$con) : error writing to connection```
+
+However, on a Windows 10 machine with fewer cores and development version of ```caret``` the issue could not be reproduced.
+
+We have also tried running ```caret::train()``` parallel on Linux (Ubuntu) via the ```doMC``` library and found that below setting runs just fine and also faster than a sequential execution. We only include the code here for info without execution.
+
+```{r eval = FALSE}
+library(doMC)
+
+cores_2_use <- floor(0.8 * parallel::detectCores())
+registerDoMC(cores_2_use)
+
+microbenchmark(
+  glm_par =
+    train(y ~ .,
+          data = df,
+          method = "glm",
+          family = "binomial",
+          metric = "ROC",
+          trControl = ctrl),
+  times = 5)
+```
+
+Finally, let's compare parallel versus non-parallel execution time. We can see that the parallel setup performed significantly better but we would have expected even more as we are using a multiple of the one-core setup.
+
+```{r}
+glm_nopar
+glm_par
+```
+
+
+## A note on tuning parameters in caret
+
+When it comes to more complex models in general, often tuning parameters can be used to improve the model. There are different ways to provide the range of parameters to take. In particular, one may use
+
+* pre-defined number (e.g. if domain knowledge already provides and idea)
+* use [grid search](https://topepo.github.io/caret/model-training-and-tuning.html#custom) (default in ```caret::train()```)
+* use [random search](https://topepo.github.io/caret/random-hyperparameter-search.html)
+
+In general, the more tuning parameters are available, the higher the computational cost of selecting them. We will show some applications of options below. For further information, see [The caret package 5: Model Training and Tuning](https://topepo.github.io/caret/model-training-and-tuning.html)
+
+## Trees
+
+Trees stratify or segment the predictor space into a number of simple regions. In order to make a prediction for a given observation, we typically use the mean or the mode of the training observations in the region to which it belongs. Trees are easy to interpret and built but as pointed out in ["An Introduction to Statistical Learning"](http://www-bcf.usc.edu/~gareth/ISL/) they may not compete with the best supervised learning approaches:
+
+> Tree-based methods are simple and useful for interpretation. However, they typically are not competitive with the best supervised learning approaches, such as those seen in Chapters 6 and 7, in terms of prediction accuracy. Hence in this chapter we also introduce bagging, random forests, and boosting. Each of these approaches involves producing multiple trees which are then combined to yield a single consensus prediction. We will see that combining a large number of trees can often result in dramatic improvements in prediction accuracy, at the expense of some loss in interpretation.
+
+Following this guidance, we will also look into some alternatives / enhancements of the basic tree model used in [CART](https://en.wikipedia.org/wiki/Decision_tree_learning). Some further resources on trees are found in
+
+* [An Introduction to Statistical Learning](http://www-bcf.usc.edu/~gareth/ISL/)
+* [A Complete Tutorial on Tree Based Modeling from Scratch (in R & Python)](https://www.analyticsvidhya.com/blog/2016/04/complete-tutorial-tree-based-modeling-scratch-in-python/)
+
+As usual, there are many ways to implement tree models in R but we will stay within the ```caret``` package and use the API that was already explained earlier.
+
+### Simple tree using CART via rpart in caret
+
+We start by building a simple tree using the CART method via rpart in caret. Note that ```caret``` may not offer the full set of features that are available when using the ```rpart``` library directly but it should suffice for our illustration. For more details, see [rpart on CRAN](https://cran.r-project.org/web/packages/rpart/index.html) and in particular [An Introduction to Recursive Partitioning Using the RPART Routines
+](https://cran.r-project.org/web/packages/rpart/vignettes/longintro.pdf) for some background.
+
+We define our control and train functions as before and look at the results.
+
+```{r}
+ctrl <- 
+  trainControl(method = "repeatedcv", 
+               number = 10,
+               repeats = 5,
+               classProbs = TRUE,
+               summaryFunction = twoClassSummary,
+               verboseIter = FALSE,
+               allowParallel = TRUE)
+
+# library(rpart)
+
+model_rpart <-
+  train_down %>%
+  select(model_vars) %>%
+  mutate(default = as.factor(ifelse(default == TRUE, "yes", "no"))) %>%
+  filter(complete.cases(.)) %>%
+  train(default ~ .,
+        data = .,
+        method = 'rpart',
+        metric = "ROC",
+        preProc = c("center", "scale"),
+        trControl = ctrl)
+
+model_rpart
+```
+
+We see that ROCAUC is ~ 70% for the best model iteration but sensitivity is worse than in some previous models. ```caret``` stepped through some complexity parameters (cp) and printed results for them. We can look at ```cp``` visually for the different values. In fact, under ```caret``` this is the only tuning parameter available for ```method = rpart```.
+
+```{r}
+ggplot(model_rpart)
+```
+
+We can also visualize the final tree by accessing the ```finalModel``` element from the ```caret::train()``` model object. We have to add the text manually to the plot via ```graphics::text()```. We use a larger margin to have enough space for the text.
+
+```{r}
+plot(model_rpart$finalModel, uniform = TRUE, margin = 0.2)
+graphics::text(model_rpart$finalModel)
+```
+
+Apparently, there are only two splits, for out_prncp_inv and gradeB.
+
+Rather than using the default grid search for choosing the tuning parameter ```cp```, we could use random search (as mentioned earlier). For a theoretical background on why this might be useful, see e.g. [Random Search for Hyper-Parameter Optimization
+](http://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf). We implement random search via the parameter ```caret::trainControl(search = "random")```.
+
+```{r}
+ctrl <- 
+  trainControl(method = "repeatedcv", 
+               number = 10,
+               repeats = 5,
+               classProbs = TRUE,
+               summaryFunction = twoClassSummary,
+               verboseIter = FALSE,
+               allowParallel = TRUE,
+               search = "random")
+
+model_rpart <-
+  train_down %>%
+  select(model_vars) %>%
+  mutate(default = as.factor(ifelse(default == TRUE, "yes", "no"))) %>%
+  filter(complete.cases(.)) %>%
+  train(default ~ .,
+        data = .,
+        method = 'rpart',
+        metric = "ROC",
+        preProc = c("center", "scale"),
+        trControl = ctrl)
+
+model_rpart
+```
+
+We can see that ROCAUC went up to ~ 74% and sensitivity also increased somewhat with the random search cp parameterization which ended up using a value much smaller than grid search. We again visualize the tree to see how it changed.
+
+```{r fig.width = 14, fig.height = 15}
+plot(model_rpart$finalModel, uniform = TRUE, margin = 0.1)
+graphics::text(model_rpart$finalModel, cex = 0.5)
+```
+Clearly the model has become more complex which was expected given that its ROCAUC went up. As before, we will predict test outcome with the final model.
+
+```{r}
+model_rpart_pred <- 
+  predict(model_rpart, 
+          newdata = test %>% 
+            select(model_vars) %>%
+            mutate(default = as.factor(ifelse(default == TRUE, 
+                                              "yes", "no"))) %>%
+            filter(complete.cases(.)), 
+          type = "prob")
+
+caret::confusionMatrix(
+  data = ifelse(model_rpart_pred[, "yes"] > 0.5, "yes", "no"), 
+  reference = as.factor(ifelse(test[complete.cases(test[, model_vars]), 
+                                    "default"] == TRUE, "yes", "no")),
+  positive = "yes")
+```
+
+Compute ROC.
+
+```{r}
+roc_rpart <- 
+  pROC::roc(response = temp, 
+            predictor = model_rpart_pred[, "yes"])
+
+roc_rpart
+```
+
+The ROCAUC is ~74% which is nearly the same as for cross-validated training set. We plot the curve comparing it against the ROC from earlier models.
+
+```{r}
+pROC::plot.roc(x = roc_glm_1, legacy.axes = FALSE, xlim = c(1, 0), asp = NA,
+               col = "green")
+
+pROC::plot.roc(x = roc_glm_2, legacy.axes = FALSE, xlim = c(1, 0), asp = NA,
+               add = TRUE, col = "blue")
+
+pROC::plot.roc(x = roc_rpart, legacy.axes = FALSE, xlim = c(1, 0), asp = NA,
+               add = TRUE, col = "orange")
+
+
+legend(x = "bottomright", legend=c("glm_1 AUC = 0.664", "glm_2 AUC = 0.7",
+                                   "rpart AUC = 0.74"), 
+       col = c("green", "blue", "orange"), lty = 1, cex = 1.0)
+```
+
+### Random forest via randomForest in caret
+
+For random forests, the library [randomForest](https://cran.r-project.org/web/packages/randomForest/index.html) is used. Tuning parameter is ```mtry``` which is the number of variables randomly sampled as candidates at each split. For computationally reasons, we limit the number of trees via ```caret::trainControl(ntree))```, the number of folds via ```caret::trainControl(number))``` and the resampling iterations via ```caret::trainControl(repeats))```.
+
+```{r}
+# library(randomForest)
+
+ctrl <- 
+  trainControl(method = "repeatedcv", 
+               number = 5,
+               repeats = 1,
+               classProbs = TRUE,
+               summaryFunction = twoClassSummary,
+               verboseIter = FALSE,
+               allowParallel = TRUE)
+
+model_rf <-
+  train_down %>%
+  select(model_vars) %>%
+  mutate(default = as.factor(ifelse(default == TRUE, "yes", "no"))) %>%
+  filter(complete.cases(.)) %>%
+  train(default ~ .,
+        data = .,
+        method = 'rf',
+        ntree = 10,
+        metric = "ROC",
+        preProc = c("center", "scale"),
+        trControl = ctrl)
+
+model_rf
+```
+
+We can see that ROCAUC is ~ 70% at mtry = 20. We again visualize but since it is a combination of many trees, the plot will look different.
+
+```{r}
+plot(model_rf$finalModel)
+```
+
+The error would most likely go further down if we had allowed more trees.
+
+```{r}
+model_rf_pred <- 
+  predict(model_rf, 
+          newdata = test %>% 
+            select(model_vars) %>%
+            mutate(default = as.factor(ifelse(default == TRUE, 
+                                              "yes", "no"))) %>%
+            filter(complete.cases(.)), 
+          type = "prob")
+
+caret::confusionMatrix(
+  data = ifelse(model_rf_pred[, "yes"] > 0.5, "yes", "no"), 
+  reference = as.factor(ifelse(test[complete.cases(test[, model_vars]), 
+                                    "default"] == TRUE, "yes", "no")),
+  positive = "yes")
+```
+
+Compute ROC.
+
+```{r}
+roc_rf <- 
+  pROC::roc(response = temp, 
+            predictor = model_rf_pred[, "yes"])
+
+roc_rf
+```
+
+As the ROCAUC is not better than before, we will not plot it against earlier models.
+
+### Stochastic Gradient Boosting via gbm in caret
+
+For Stochastic Gradient Boosting, the library [gbm](https://cran.r-project.org/web/packages/gbm/index.html) is used. Tuning parameters are
+
+* n.trees: total number of trees to fit
+* interaction.depth: maximum depth of variable interactions
+* shrinkage: shrinkage parameter applied to each tree in the expansion
+* n.minobsinnode: minimum number of observations in the trees terminal nodes
+
+For some background, see e.g. 
+
+* [Stochastic Gradient Boosting, Jerome Friedman](http://statweb.stanford.edu/~jhf/ftp/stobst.pdf)
+* [A Gentle Introduction to the Gradient Boosting Algorithm for Machine Learning](https://machinelearningmastery.com/gentle-introduction-gradient-boosting-algorithm-machine-learning/)
+
+```{r}
+# library(gbm)
+
+ctrl <- 
+  trainControl(method = "repeatedcv", 
+               number = 5,
+               repeats = 1,
+               classProbs = TRUE,
+               summaryFunction = twoClassSummary,
+               verboseIter = FALSE,
+               allowParallel = TRUE)
+
+model_gbm_1 <- 
+   train_down %>%
+   select(model_vars) %>%
+   mutate(default = as.factor(ifelse(default == TRUE, "yes", "no"))) %>%
+   filter(complete.cases(.)) %>%
+   train(default ~ ., 
+         data = ., 
+         method = "gbm",
+         metric = "ROC",
+         trControl = ctrl,
+         preProc = c("center", "scale"),
+         ## This last option is actually one
+         ## for gbm() that passes through
+         verbose = FALSE)
+
+model_gbm_1
+```
+
+Plotting the boosting iterations.
+
+```{r}
+ggplot(model_gbm_1)
+```
+
+Predict.
+
+```{r}
+model_gbm_1_pred <- 
+  predict(model_gbm_1, 
+          newdata = test %>% 
+            select(model_vars) %>%
+            mutate(default = as.factor(ifelse(default == TRUE, 
+                                              "yes", "no"))) %>%
+            filter(complete.cases(.)), 
+          type = "prob")
+
+caret::confusionMatrix(
+  data = ifelse(model_gbm_1_pred[, "yes"] > 0.5, "yes", "no"), 
+  reference = as.factor(ifelse(test[complete.cases(test[, model_vars]), 
+                                    "default"] == TRUE, "yes", "no")),
+  positive = "yes")
+```
+
+```{r}
+roc_gbm_1 <- 
+  pROC::roc(response = temp, 
+            predictor = model_gbm_1_pred[, "yes"])
+
+roc_gbm_1
+```
+
+The ROCAUC is ~75% which is nearly the same as for cross-validated training set. We plot the curve comparing it against the ROC from the simple model.
+
+```{r}
+pROC::plot.roc(x = roc_glm_1, legacy.axes = FALSE, xlim = c(1, 0), asp = NA,
+               col = "green")
+
+pROC::plot.roc(x = roc_glm_2, legacy.axes = FALSE, xlim = c(1, 0), asp = NA,
+               add = TRUE, col = "blue")
+
+pROC::plot.roc(x = roc_rpart, legacy.axes = FALSE, xlim = c(1, 0), asp = NA,
+               add = TRUE, col = "orange")
+
+pROC::plot.roc(x = roc_gbm_1, legacy.axes = FALSE, xlim = c(1, 0), asp = NA,
+               add = TRUE, col = "brown")
+
+legend(x = "bottomright", legend=c("glm_1 AUC = 0.664", "glm_2 AUC = 0.7",
+                                   "rpart AUC = 0.74", "gbm AUC = 0.753"), 
+       col = c("green", "blue", "orange", "brown"), lty = 1, cex = 1.0)
+```
+
+\pagebreak
+
+# Further Resources
+
+* [30 Questions to test your understanding of Logistic Regression](https://www.analyticsvidhya.com/blog/2017/08/skilltest-logistic-regression/)
+* [Handling Class Imbalance with R and Caret - An Introduction](http://dpmartin42.github.io/blogposts/r/imbalanced-classes-part-1)
+* [Stepwise Model Selection in Logistic Regression in R](https://stats.stackexchange.com/questions/136040/stepwise-model-selection-in-logistic-regression-in-r)
+* [The caret Package](https://topepo.github.io/caret/index.html)
+* [Modeling 101 - Predicting Binary Outcomes with R, gbm, glmnet, and {caret}](https://amunategui.github.io/binary-outcome-modeling/)
+* [Feature Selection in Machine Learning (Breast Cancer Datasets)](https://shiring.github.io/machine_learning/2017/01/15/rfe_ga_post)
+* [Building meaningful machine learning models for disease prediction](https://shiring.github.io/machine_learning/2017/03/31/webinar_code)
+* [Linear Model Selection & Regularization](https://rpubs.com/ryankelly/reg)
+* [Default Rates at Lending Club & Prosper: When Loans Go Bad](http://www.lendingmemo.com/lending-club-prosper-default-rates/)
+* [Loan Data (2007-2011) From Lending Club](http://nbviewer.jupyter.org/gist/odubno/0b767a47f75adb382246)
+* [JFdarre Project 1: Lending Club's data](https://rstudio-pubs-static.s3.amazonaws.com/115829_32417d32dbce41eab3eeaf608a0eef9d.html)
+* [Predict LendingClub's Loan Data](https://rstudio-pubs-static.s3.amazonaws.com/203258_d20c1a34bc094151a0a1e4f4180c5f6f.html)
+* [Making Maps with R](http://eriqande.github.io/rep-res-web/lectures/making-maps-with-R.html)
+* [Exploratory Data Analysis of Lending Club Issued Loans](https://shuhelicopter.github.io/Data_Exploratory_Analysis_of_LC.html)
+* [Predicting Default Risk of Lending Club Loans](http://cs229.stanford.edu/proj2015/199_report.pdf)

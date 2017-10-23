@@ -4,6 +4,14 @@
     
     
     <url>
+      <loc>/project/lending-club-loan-data-in-r/</loc>
+      <lastmod>2017-10-23T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
       <loc>/post/install-docker-on-windows/</loc>
       <lastmod>2017-10-07T00:00:00+00:00</lastmod>
     </url>
@@ -116,6 +124,13 @@
     
     
     <url>
+      <loc>/2017-10-02-lending-club-loan-data-in-r-an-end-to-end-data-science-walkthrough/</loc>
+    </url>
+    
+  
+    
+    
+    <url>
       <loc>/tags/bash-on-windows/</loc>
       <lastmod>2017-10-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -135,6 +150,24 @@
     <url>
       <loc>/tags/cmd/</loc>
       <lastmod>2017-10-07T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+      <loc>/tags/data-science/</loc>
+      <lastmod>2017-10-23T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+      <loc>/categories/data-science/</loc>
+      <lastmod>2017-10-23T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -196,6 +229,15 @@
     
     
     <url>
+      <loc>/project/</loc>
+      <lastmod>2017-10-23T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
       <loc>/publication_types/</loc>
       <priority>0</priority>
     </url>
@@ -214,7 +256,7 @@
     
     <url>
       <loc>/categories/r/</loc>
-      <lastmod>2015-07-23T21:13:14-05:00</lastmod>
+      <lastmod>2017-10-23T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
